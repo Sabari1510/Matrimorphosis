@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { db } from "./db/mysql";
+import requestRoutes from "./routes/request.routes";
+
 
 
 const app = express();
@@ -18,6 +20,8 @@ db.getConnection()
 app.get("/", (req, res) => {
   res.send("Backend server is running");
 });
+app.use("/requests", requestRoutes);
+
 
 // Start server
 app.listen(PORT, () => {
