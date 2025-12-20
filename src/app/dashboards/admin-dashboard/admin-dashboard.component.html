@@ -1,0 +1,228 @@
+<app-navbar></app-navbar>
+
+<main class="admin-main">
+    <div class="admin-header">
+        <div class="header-content">
+            <h1>Admin Portal</h1>
+            <div class="header-actions">
+                <select class="date-range-select">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <!-- Overview Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card total">
+                <div class="metric-icon">📊</div>
+                <div class="metric-info">
+                    <div class="metric-value">{{ stats.totalRequests }}</div>
+                    <div class="metric-label">Total Complaints</div>
+                    <div class="metric-trend positive">
+                        <span class="trend-icon">↑</span>
+                        <span class="trend-value">12%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card pending">
+                <div class="metric-icon">⏳</div>
+                <div class="metric-info">
+                    <div class="metric-value">{{ stats.pendingRequests }}</div>
+                    <div class="metric-label">Pending</div>
+                    <div class="metric-trend negative">
+                        <span class="trend-icon">↓</span>
+                        <span class="trend-value">8%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card resolved">
+                <div class="metric-icon">✅</div>
+                <div class="metric-info">
+                    <div class="metric-value">{{ stats.resolvedRequests }}</div>
+                    <div class="metric-label">Resolved</div>
+                    <div class="metric-trend positive">
+                        <span class="trend-icon">↑</span>
+                        <span class="trend-value">15%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card overdue">
+                <div class="metric-icon">⚠️</div>
+                <div class="metric-info">
+                    <div class="metric-value">{{ stats.overdueRequests }}</div>
+                    <div class="metric-label">Overdue</div>
+                    <div class="metric-trend neutral">
+                        <span class="trend-value">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <!-- Category Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Complaints by Category</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas #categoryChart></canvas>
+                </div>
+            </div>
+
+            <!-- Status Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Status Distribution</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas #statusChart></canvas>
+                </div>
+            </div>
+
+            <!-- Trend Chart -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3>Complaint Trends (Last 30 Days)</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas #trendChart></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Performance -->
+        <div class="performance-section">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>
+                        <span class="section-icon">👷</span>
+                        Staff Performance
+                    </h2>
+                </div>
+
+                <div class="performance-grid">
+                    <div *ngFor="let staff of staffPerformance" class="staff-card">
+                        <div class="staff-avatar">{{ staff.initials }}</div>
+                        <div class="staff-info">
+                            <div class="staff-name">{{ staff.name }}</div>
+                            <div class="staff-role">{{ staff.role }}</div>
+                        </div>
+                        <div class="staff-stats">
+                            <div class="staff-stat">
+                                <span class="stat-label">Assigned</span>
+                                <span class="stat-value">{{ staff.assigned }}</span>
+                            </div>
+                            <div class="staff-stat">
+                                <span class="stat-label">Completed</span>
+                                <span class="stat-value">{{ staff.completed }}</span>
+                            </div>
+                            <div class="staff-stat">
+                                <span class="stat-label">Avg Time</span>
+                                <span class="stat-value">{{ staff.avgTime }}h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Complaints & Assignment -->
+        <div class="content-grid">
+            <!-- Recent Complaints -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Recent Complaints</h2>
+                    <a routerLink="/maintenance/requests" class="view-all">View All →</a>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let request of recentRequests">
+                                <td><strong>{{ request.id }}</strong></td>
+                                <td>{{ request.title }}</td>
+                                <td>
+                                    <span class="category-badge">{{ getCategoryLabel(request.category) }}</span>
+                                </td>
+                                <td>
+                                    <span class="priority-badge" [class]="'priority-' + request.priority">
+                                        {{ request.priority | uppercase }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" [class]="'status-' + request.status">
+                                        {{ formatStatus(request.status) }}
+                                    </span>
+                                </td>
+                                <td>{{ formatDate(request.createdDate) }}</td>
+                                <td>
+                                    <button *ngIf="request.status === 'pending'" class="btn-assign"
+                                        (click)="openAssignModal(request)">
+                                        Assign
+                                    </button>
+                                    <span *ngIf="request.status !== 'pending'" class="assigned-text">
+                                        Assigned
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div *ngIf="recentRequests.length === 0" class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>No complaints found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Assignment Modal -->
+<div class="modal-overlay" *ngIf="showAssignModal" (click)="closeAssignModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Assign Complaint</h3>
+            <button class="modal-close" (click)="closeAssignModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-complaint-info">
+                <strong>{{ selectedComplaint?.id }}</strong> - {{ selectedComplaint?.title }}
+            </p>
+            <div class="form-group">
+                <label>Select Staff Member</label>
+                <select [(ngModel)]="selectedStaffId" class="form-select">
+                    <option value="">Choose staff...</option>
+                    <option *ngFor="let staff of staffPerformance" [value]="staff.id">
+                        {{ staff.name }} ({{ staff.assigned }} active tasks)
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeAssignModal()">Cancel</button>
+            <button class="btn btn-primary" [disabled]="!selectedStaffId" (click)="assignComplaint()">
+                Assign Complaint
+            </button>
+        </div>
+    </div>
+</div>

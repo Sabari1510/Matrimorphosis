@@ -1,0 +1,24 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-left">
+            <div class="navbar-brand">
+                <strong>Maintenance Tracker</strong>
+            </div>
+
+            <nav class="nav-menu" *ngIf="currentUser">
+                <a *ngFor="let item of filteredMenuItems" [routerLink]="item.route" routerLinkActive="active"
+                    class="nav-link">
+                    {{ item.label }}
+                </a>
+            </nav>
+        </div>
+
+        <div class="navbar-right" *ngIf="currentUser">
+            <div class="user-info">
+                <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+                <span class="user-role">({{ currentUser.role }})</span>
+            </div>
+            <button class="btn-logout" (click)="logout()">Logout</button>
+        </div>
+    </div>
+</nav>

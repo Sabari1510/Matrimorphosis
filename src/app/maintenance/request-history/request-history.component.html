@@ -1,0 +1,106 @@
+<app-navbar></app-navbar>
+
+<main class="requests-main">
+    <div class="requests-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">📋</div>
+                <div class="header-text">
+                    <h1>My Requests</h1>
+                    <p class="header-subtitle">View all maintenance requests and their status</p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-value">{{ requests.length }}</span>
+                    <span class="stat-label">Total</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="requests-container">
+        <div *ngIf="isLoading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading requests...</p>
+        </div>
+
+        <div *ngIf="!isLoading && requests.length > 0" class="requests-grid">
+            <div *ngFor="let request of requests" class="request-card">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="request-id">{{ request.id }}</span>
+                        <span class="category-badge">{{ getCategoryLabel(request.category) }}</span>
+                    </div>
+                    <span class="status-badge" [class]="'status-' + request.status">
+                        {{ formatStatus(request.status) }}
+                    </span>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="request-title">{{ request.title }}</h3>
+                    <p class="request-description">{{ request.description }}</p>
+
+                    <div class="request-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Priority:</span>
+                            <span class="priority-badge" [class]="'priority-' + request.priority">
+                                {{ request.priority | uppercase }}
+                            </span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Apartment:</span>
+                            <span class="meta-value">{{ request.apartmentNumber }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Submitted:</span>
+                            <span class="meta-value">{{ formatDate(request.createdDate) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Staff Resolution Details -->
+                    <div *ngIf="request.assignedTo || request.status === 'completed'" class="resolution-section">
+                        <h4>Resolution Details</h4>
+                        <div class="resolution-info">
+                            <div *ngIf="request.assignedTo" class="info-row">
+                                <span class="info-label">Assigned To:</span>
+                                <span class="info-value staff-name">{{ request.assignedTo }}</span>
+                            </div>
+                            <div *ngIf="request.status === 'completed' && request.resolvedBy" class="info-row">
+                                <span class="info-label">Resolved By:</span>
+                                <span class="info-value staff-name">{{ request.resolvedBy }}</span>
+                            </div>
+                            <div *ngIf="request.status === 'completed' && request.resolvedDate" class="info-row">
+                                <span class="info-label">Resolved On:</span>
+                                <span class="info-value">{{ formatDate(request.resolvedDate) }}</span>
+                            </div>
+                            <div *ngIf="request.remarks && request.remarks.length > 0" class="remarks-section">
+                                <span class="info-label">Staff Remarks:</span>
+                                <div class="remarks-list">
+                                    <div *ngFor="let remark of request.remarks" class="remark-item">
+                                        {{ remark }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photos -->
+                    <div *ngIf="request.photos && request.photos.length > 0" class="photos-section">
+                        <h4>Photos</h4>
+                        <div class="photos-grid">
+                            <img *ngFor="let photo of request.photos" [src]="photo" alt="Request photo"
+                                class="request-photo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoading && requests.length === 0" class="empty-state">
+            <p>No requests found</p>
+            <p class="empty-subtitle">You haven't submitted any maintenance requests yet</p>
+            <a routerLink="/resident-dashboard" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,208 @@
+<app-navbar></app-navbar>
+
+<main class="staff-main">
+    <div class="staff-header">
+        <div class="header-content">
+            <h1>Staff Portal</h1>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <span class="stat-number">{{ stats.myTasks }}</span>
+                    <span class="stat-text">My Tasks</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="staff-container">
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card pending">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ stats.pending }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card progress">
+                <div class="stat-icon">🔧</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ stats.inProgress }}</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ stats.completedToday }}</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+            </div>
+            <div class="stat-card efficiency">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ completionRate }}%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-card">
+                <div class="filter-group">
+                    <label>Filter by Category</label>
+                    <select [(ngModel)]="selectedCategory" (change)="applyFilters()" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="hvac">HVAC</option>
+                        <option value="appliance">Appliance</option>
+                        <option value="security">Security</option>
+                        <option value="cleaning">Cleaning</option>
+                        <option value="painting">Painting</option>
+                        <option value="structural">Structural</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Filter by Priority</label>
+                    <select [(ngModel)]="selectedPriority" (change)="applyFilters()" class="filter-select">
+                        <option value="">All Priorities</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Filter by Status</label>
+                    <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="assigned">Assigned</option>
+                        <option value="in-progress">In Progress</option>
+                    </select>
+                </div>
+
+                <button class="btn-clear-filters" (click)="clearFilters()">
+                    Clear Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-section" *ngIf="filteredWorkOrders.length > 0">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span class="progress-label">Overall Progress</span>
+                    <span class="progress-percentage">{{ overallProgress }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="overallProgress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Work Orders -->
+        <div class="work-orders-section">
+            <div class="section-header">
+                <h2>
+                    <span class="section-icon">📋</span>
+                    Assigned Tasks
+                </h2>
+                <span class="task-count">{{ filteredWorkOrders.length }} tasks</span>
+            </div>
+
+            <div class="work-orders-grid">
+                <div *ngFor="let order of filteredWorkOrders" class="work-order-card">
+                    <div class="order-header">
+                        <div class="order-id-section">
+                            <span class="order-id">{{ order.id }}</span>
+                            <span class="priority-badge" [class]="'priority-' + order.priority">
+                                {{ order.priority | uppercase }}
+                            </span>
+                        </div>
+                        <span class="category-badge">{{ getCategoryLabel(order.category) }}</span>
+                    </div>
+
+                    <h3 class="order-title">{{ order.title }}</h3>
+                    <p class="order-description">{{ order.description }}</p>
+
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🏠</span>
+                            <span class="detail-text">Apt {{ order.apartmentNumber }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">👤</span>
+                            <span class="detail-text">{{ order.residentName }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📅</span>
+                            <span class="detail-text">{{ formatDate(order.createdDate) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="order-status-section">
+                        <label>Status</label>
+                        <select [(ngModel)]="order.status" (change)="updateStatus(order)" class="status-select"
+                            [class]="'status-' + order.status">
+                            <option value="assigned">Assigned</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="order-remarks-section">
+                        <label>Add Remarks</label>
+                        <textarea [(ngModel)]="order.currentRemark" class="remarks-input"
+                            placeholder="Add notes or updates..." rows="2"></textarea>
+                        <button class="btn-add-remark" (click)="addRemark(order)">
+                            Add Remark
+                        </button>
+                    </div>
+
+                    <div class="remarks-list" *ngIf="order.remarks && order.remarks.length > 0">
+                        <div class="remark-item" *ngFor="let remark of order.remarks">
+                            <span class="remark-icon">💬</span>
+                            <span class="remark-text">{{ remark }}</span>
+                        </div>
+                    </div>
+
+                    <div class="order-photo-section">
+                        <label>Resolution Photos</label>
+                        <div class="photo-upload-area" (click)="resolutionFileInput.click()">
+                            <input #resolutionFileInput type="file" accept="image/*" multiple
+                                (change)="onResolutionPhotoSelected($event, order)" style="display: none;">
+                            <span class="upload-icon">📷</span>
+                            <span class="upload-text">Upload resolution photos</span>
+                        </div>
+                        <div class="photo-preview" *ngIf="order.resolutionPhotos && order.resolutionPhotos.length > 0">
+                            <img *ngFor="let photo of order.resolutionPhotos" [src]="photo" alt="Resolution photo"
+                                class="resolution-photo">
+                        </div>
+                    </div>
+
+                    <div class="order-actions">
+                        <button *ngIf="order.status === 'assigned'" class="btn btn-start" (click)="startWork(order)">
+                            <span class="btn-icon">▶️</span>
+                            Start Work
+                        </button>
+                        <button *ngIf="order.status === 'in-progress'" class="btn btn-complete"
+                            (click)="markAsResolved(order)">
+                            <span class="btn-icon">✅</span>
+                            Mark as Resolved
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="filteredWorkOrders.length === 0" class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>No work orders found</p>
+                    <p class="empty-subtitle">Try adjusting your filters</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
