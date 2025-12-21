@@ -4,6 +4,7 @@ import {
   getRequestsByResident,
   getRequestsByTechnician,
   updateRequestStatus,
+  assignTechnician,
 } from "../controllers/request.controller";
 
 const router = Router();
@@ -12,6 +13,8 @@ router.post("/", createRequest);
 router.get("/resident/:residentId", getRequestsByResident);
 router.get("/technician/:technicianId", getRequestsByTechnician);
 router.put("/:requestId/status", updateRequestStatus);
+router.put("/:requestId/assign", assignTechnician);
+
 
 
 

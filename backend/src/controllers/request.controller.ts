@@ -100,6 +100,33 @@ export const updateRequestStatus = async (req: Request, res: Response) => {
     });
   }
 };
+export const assignTechnician = async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const { technicianId } = req.body;
+
+    if (!technicianId) {
+      return res.status(400).json({
+        message: "Technician ID is required",
+      });
+    }
+
+    await db.execute(
+      "UPDATE requests SET technician_id = ?, status = 'Assigned' WHERE id = ?",
+      [technicianId, requestId]
+    );
+
+    return res.status(200).json({
+      message: "Technician assigned successfully",
+    });
+  } catch (error) {
+    console.error("Assign technician error:", error);
+    return res.status(500).json({
+      message: "Failed to assign technician",
+    });
+  }
+};
+
 
 
 
