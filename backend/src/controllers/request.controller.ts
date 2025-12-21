@@ -127,6 +127,52 @@ export const assignTechnician = async (req: Request, res: Response) => {
   }
 };
 
+export const submitFeedback = async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const { rating } = req.body;
+
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({
+        message: "Rating must be between 1 and 5",
+      });
+    }
+
+    // Check request status
+    const [rows]: any = await db.execute(
+      "SELECT status FROM requests WHERE id = ?",
+      [requestId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: "Request not found",
+      });
+    }
+
+    if (rows[0].status !== "Resolved") {
+      return res.status(400).json({
+        message: "Feedback allowed only after request is resolved",
+      });
+    }
+
+    await db.execute("UPDATE requests SET feedback_rating = ? WHERE id = ?", [
+      rating,
+      requestId,
+    ]);
+
+    return res.status(200).json({
+      message: "Feedback submitted successfully",
+    });
+  } catch (error) {
+    console.error("Submit feedback error:", error);
+    return res.status(500).json({
+      message: "Failed to submit feedback",
+    });
+  }
+};
+
+
 
 
 
