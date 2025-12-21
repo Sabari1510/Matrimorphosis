@@ -20,7 +20,8 @@ db.getConnection()
 app.get("/", (req, res) => {
   res.send("Backend server is running");
 });
-app.use("/requests", requestRoutes);
+app.use("/api/requests", requestRoutes);
+
 
 
 // Start server

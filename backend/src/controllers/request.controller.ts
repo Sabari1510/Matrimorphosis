@@ -32,3 +32,74 @@ export const createRequest = async (req: Request, res: Response) => {
     });
   }
 };
+export const getRequestsByResident = async (req: Request, res: Response) => {
+  try {
+    const { residentId } = req.params;
+
+    const [rows] = await db.execute(
+      "SELECT * FROM requests WHERE resident_id = ? ORDER BY created_at DESC",
+      [residentId]
+    );
+
+    return res.status(200).json({
+      message: "Request history fetched successfully",
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Fetch request history error:", error);
+    return res.status(500).json({
+      message: "Failed to fetch request history",
+    });
+  }
+};
+export const getRequestsByTechnician = async (req: Request, res: Response) => {
+  try {
+    const { technicianId } = req.params;
+
+    const [rows] = await db.execute(
+      "SELECT * FROM requests WHERE technician_id = ? ORDER BY created_at DESC",
+      [technicianId]
+    );
+
+    return res.status(200).json({
+      message: "Assigned requests fetched successfully",
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Fetch technician requests error:", error);
+    return res.status(500).json({
+      message: "Failed to fetch technician requests",
+    });
+  }
+};
+export const updateRequestStatus = async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const { status } = req.body;
+
+    const allowedStatus = ["Assigned", "In-Progress", "Resolved"];
+
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid status value",
+      });
+    }
+
+    await db.execute("UPDATE requests SET status = ? WHERE id = ?", [
+      status,
+      requestId,
+    ]);
+
+    return res.status(200).json({
+      message: "Request status updated successfully",
+    });
+  } catch (error) {
+    console.error("Update status error:", error);
+    return res.status(500).json({
+      message: "Failed to update request status",
+    });
+  }
+};
+
+
+
