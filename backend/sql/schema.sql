@@ -1,8 +1,3 @@
--- NOTE:
--- This schema.sql is for reference/documentation only.
--- Actual schema used is created directly in MySQL Workbench
--- as per project requirements (users + requests tables).
-
 -- Create database and table for maintenance requests
 CREATE DATABASE IF NOT EXISTS maintenance_tracker;
 USE maintenance_tracker;
@@ -10,12 +5,11 @@ USE maintenance_tracker;
 -- Requests table: defaults status to 'New'
 CREATE TABLE IF NOT EXISTS requests (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  resident_id INT UNSIGNED NOT NULL, -- resident_id references users(id)
+  resident_id INT UNSIGNED NOT NULL,
   category ENUM('Plumbing','Electrical','Painting','Other') NOT NULL,
   description TEXT NOT NULL,
   media VARCHAR(1024),
-  status ENUM('New','Assigned','In-Progress','Resolved') NOT NULL DEFAULT 'New',
-  technician_id INT UNSIGNED NULL, -- technician_id references users(id)
+  status ENUM('New','In Progress','Resolved','Closed') NOT NULL DEFAULT 'New',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
