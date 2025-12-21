@@ -1,3 +1,4 @@
+import { authorizeRoles } from "../middleware/role.middleware";
 import { Router } from "express";
 import {
   createRequest,
@@ -10,15 +11,12 @@ import {
 
 const router = Router();
 
-router.post("/", createRequest);
-router.get("/resident/:residentId", getRequestsByResident);
-router.get("/technician/:technicianId", getRequestsByTechnician);
-router.put("/:requestId/status", updateRequestStatus);
-router.put("/:requestId/assign", assignTechnician);
-router.put("/:requestId/feedback", submitFeedback);
-
-
-
+router.post("/", authorizeRoles(["Resident"]), createRequest);
+router.get("/resident/:residentId", authorizeRoles(["Resident"]), getRequestsByResident);
+router.get("/technician/:technicianId", authorizeRoles(["Technician"]), getRequestsByTechnician);
+router.put("/:requestId/status", authorizeRoles(["Technician"]), updateRequestStatus);
+router.put("/:requestId/assign", authorizeRoles(["Admin"]), assignTechnician);
+router.put("/:requestId/feedback", authorizeRoles(["Resident"]), submitFeedback);
 
 
 export default router;
