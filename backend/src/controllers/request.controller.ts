@@ -15,8 +15,8 @@ export const createRequest = async (req: Request, res: Response) => {
     }
 
     const [result] = await db.execute(
-      "INSERT INTO requests (resident_id, category, description, media) VALUES (?, ?, ?, ?)",
-      [resident_id, category, description, media]
+      "INSERT INTO requests (resident_id, category, description, media, status) VALUES (?, ?, ?, ?, ?)",
+      [resident_id, category, description, media, 'New']
     );
 
     const insertedId = (result as any).insertId;

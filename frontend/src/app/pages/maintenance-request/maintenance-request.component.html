@@ -1,0 +1,22 @@
+<mat-card>
+  <h2>Raise Maintenance Request</h2>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Category</mat-label>
+    <mat-select [(ngModel)]="category">
+      <mat-option value="Plumbing">Plumbing</mat-option>
+      <mat-option value="Electrical">Electrical</mat-option>
+      <mat-option value="Painting">Painting</mat-option>
+      <mat-option value="Other">Other</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="4" [(ngModel)]="description"></textarea>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="submitRequest()">
+    Submit Request
+  </button>
+</mat-card>

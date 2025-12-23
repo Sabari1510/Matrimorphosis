@@ -1,0 +1,14 @@
+<mat-toolbar color="primary">
+  <span>Digital Maintenance Tracker</span>
+  <span class="spacer"></span>
+
+  <button mat-button routerLink="/maintenance/new">New Request</button>
+  <button mat-button routerLink="/maintenance/history">My Requests</button>
+  <button mat-button routerLink="/technician/dashboard">Technician</button>
+  <button mat-button routerLink="/admin/dashboard">Admin</button>
+</mat-toolbar>
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>
+
