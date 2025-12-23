@@ -1,1 +1,16 @@
-<p>feedback works!</p>
+<mat-card>
+  <h2>Submit Feedback</h2>
+
+  <mat-select placeholder="Select Rating" [(ngModel)]="rating">
+    <mat-option *ngFor="let r of ratings" [value]="r">
+      {{ r }}
+    </mat-option>
+  </mat-select>
+
+  <br /><br />
+
+  <button mat-raised-button color="primary" (click)="submitFeedback()">
+    Submit Feedback
+  </button>
+</mat-card>
+

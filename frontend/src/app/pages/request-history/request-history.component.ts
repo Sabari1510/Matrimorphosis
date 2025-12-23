@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MaintenanceService } from '../../services/maintenance.service';
 
 @Component({
   selector: 'app-request-history',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, MatTableModule, MatCardModule],
+  imports: [CommonModule, MatCardModule, MatTableModule],
   templateUrl: './request-history.component.html',
   styleUrls: ['./request-history.component.css'],
 })
 export class RequestHistoryComponent implements OnInit {
+  requests: any[] = [];
+
   displayedColumns: string[] = [
     'id',
     'category',
@@ -20,23 +22,18 @@ export class RequestHistoryComponent implements OnInit {
     'created_at',
   ];
 
-  requests: any[] = [];
-
-  constructor(private http: HttpClient) {}
+  constructor(private maintenanceService: MaintenanceService) {}
 
   ngOnInit(): void {
-    // TEMP resident id = 1
-    this.http
-      .get<any>('http://localhost:3000/requests/resident/1', {
-        headers: { 'x-user-role': 'Resident' },
-      })
-      .subscribe({
-        next: (res) => {
-          this.requests = res.data;
-        },
-        error: (err) => {
-          console.error('Failed to load request history', err);
-        },
-      });
+    const residentId = 3; // same test resident
+
+    this.maintenanceService.getRequestsByResident(residentId).subscribe({
+      next: (res: any) => {
+        this.requests = res.data;
+      },
+      error: (err) => {
+        console.error('Failed to load request history', err);
+      },
+    });
   }
 }

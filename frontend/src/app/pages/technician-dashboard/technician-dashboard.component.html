@@ -1,1 +1,15 @@
-<p>technician-dashboard works!</p>
+<mat-card *ngFor="let req of requests" style="margin-bottom: 16px;">
+  <h3>{{ req.category }}</h3>
+  <p>{{ req.description }}</p>
+  <p>Status: <b>{{ req.status }}</b></p>
+
+  <mat-select
+    [(ngModel)]="req.status"
+    (selectionChange)="updateStatus(req.id, req.status)"
+  >
+    <mat-option value="Assigned">Assigned</mat-option>
+    <mat-option value="In-Progress">In-Progress</mat-option>
+    <mat-option value="Resolved">Resolved</mat-option>
+  </mat-select>
+</mat-card>
+

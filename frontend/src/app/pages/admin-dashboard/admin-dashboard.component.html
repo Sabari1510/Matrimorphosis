@@ -1,1 +1,15 @@
-<p>admin-dashboard works!</p>
+<mat-card *ngFor="let r of requests" class="mb-3">
+  <h3>{{ r.category }}</h3>
+  <p>{{ r.description }}</p>
+  <p>Status: {{ r.status }}</p>
+
+  <mat-select #tech [value]="technicians[0]?.id">
+    <mat-option *ngFor="let t of technicians" [value]="t.id">
+      {{ t.name }}
+    </mat-option>
+  </mat-select>
+
+  <button mat-raised-button color="primary" (click)="assign(r.id, tech.value)">
+    Assign Technician
+  </button>
+</mat-card>
