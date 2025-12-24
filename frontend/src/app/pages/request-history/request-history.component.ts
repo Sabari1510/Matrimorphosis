@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MaintenanceService } from '../../services/maintenance.service';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-request-history',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule],
+  imports: [CommonModule, MatCardModule, RouterModule, MatTableModule],
   templateUrl: './request-history.component.html',
   styleUrls: ['./request-history.component.css'],
 })
@@ -20,6 +22,7 @@ export class RequestHistoryComponent implements OnInit {
     'description',
     'status',
     'created_at',
+    'feedback'
   ];
 
   constructor(private maintenanceService: MaintenanceService) {}
