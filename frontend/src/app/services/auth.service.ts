@@ -8,19 +8,25 @@ export type UserRole = 'resident' | 'technician' | 'admin';
 export class AuthService {
   private roleKey = 'user_role';
 
+  // Save role in session storage so selecting a role is required each session
   setRole(role: UserRole) {
-    localStorage.setItem(this.roleKey, role);
+    sessionStorage.setItem(this.roleKey, role);
   }
 
+  // Returns role only if it was selected in the current session
   getRole(): UserRole | null {
-    return localStorage.getItem(this.roleKey) as UserRole | null;
+    return sessionStorage.getItem(this.roleKey) as UserRole | null;
   }
 
   hasRole(expectedRole: UserRole): boolean {
     return this.getRole() === expectedRole;
   }
 
+  isLoggedIn(): boolean {
+    return this.getRole() !== null;
+  }
+
   logout() {
-    localStorage.removeItem(this.roleKey);
+    sessionStorage.removeItem(this.roleKey);
   }
 }

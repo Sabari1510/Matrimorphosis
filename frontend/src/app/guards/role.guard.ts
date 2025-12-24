@@ -1,30 +1,35 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const roleGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const snackBar = inject(MatSnackBar);
 
   const expectedRole = route.data['role'];
   const currentRole = authService.getRole();
 
-  if (currentRole === expectedRole) {
+  // If there's no role selected in this session, redirect to the role selector immediately.
+  if (!authService.isLoggedIn()) {
+    snackBar.open('Please select a role before accessing this page.', 'OK', {
+      duration: 3000,
+    });
+    return router.parseUrl('/select-role');
+  }
+
+  // If an expected role exists, only allow access when it matches the current role.
+  if (expectedRole && currentRole === expectedRole) {
     return true;
   }
 
-  alert('Access denied: Unauthorized role');
+  const message = expectedRole
+    ? `Access denied: only '${expectedRole}' can access this page.`
+    : 'Access denied: Unauthorized role.';
 
-  // Redirect to a route appropriate for the user's current role to avoid navigation loops.
-  if (currentRole === 'resident') {
-    return router.parseUrl('/maintenance/new');
-  }
-  if (currentRole === 'technician') {
-    return router.parseUrl('/technician/dashboard');
-  }
-  if (currentRole === 'admin') {
-    return router.parseUrl('/admin/dashboard');
-  }
+  snackBar.open(message, 'OK', { duration: 4000 });
 
+  // Always send unauthorized users back to role selector to choose a role explicitly
   return router.parseUrl('/select-role');
 };
