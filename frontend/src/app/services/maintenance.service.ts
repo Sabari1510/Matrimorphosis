@@ -11,6 +11,7 @@ export class MaintenanceService {
   constructor(private http: HttpClient) {}
 
   createRequest(payload: any): Observable<any> {
+    // payload can be FormData or JSON
     return this.http.post(this.apiUrl, payload);
   }
   getRequestsByResident(residentId: number) {
@@ -20,8 +21,9 @@ export class MaintenanceService {
     return this.http.get(`${this.apiUrl}/technician/${technicianId}`);
   }
 
-  updateRequestStatus(requestId: number, status: string) {
-    return this.http.put(`${this.apiUrl}/${requestId}/status`, { status });
+  updateRequestStatus(requestId: number, body: any) {
+    // body can be FormData (for technician) or JSON { status }
+    return this.http.put(`${this.apiUrl}/${requestId}/status`, body);
   }
   getAllRequests() {
     return this.http.get<any>('http://localhost:3000/api/requests/resident/3');
@@ -34,7 +36,10 @@ export class MaintenanceService {
       { technicianId }
     );
   }
-  submitFeedback(requestId: number, rating: number) {
-    return this.http.post(`${this.apiUrl}/${requestId}/feedback`, { rating });
+  submitFeedback(requestId: number, rating: number, comment?: string) {
+    return this.http.post(`${this.apiUrl}/${requestId}/feedback`, {
+      rating,
+      comment: comment || null,
+    });
   }
 }

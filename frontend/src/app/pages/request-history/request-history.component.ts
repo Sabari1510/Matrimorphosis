@@ -5,7 +5,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MaintenanceService } from '../../services/maintenance.service';
 import { RouterModule } from '@angular/router';
 
-
 @Component({
   selector: 'app-request-history',
   standalone: true,
@@ -22,7 +21,7 @@ export class RequestHistoryComponent implements OnInit {
     'description',
     'status',
     'created_at',
-    'feedback'
+    'feedback',
   ];
 
   constructor(private maintenanceService: MaintenanceService) {}
@@ -38,5 +37,10 @@ export class RequestHistoryComponent implements OnInit {
         console.error('Failed to load request history', err);
       },
     });
+  }
+
+  getStars(n: number | null): any[] {
+    const count = n && n > 0 ? n : 0;
+    return new Array(count);
   }
 }

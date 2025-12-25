@@ -3,18 +3,48 @@
 
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Category</mat-label>
-    <mat-select [(ngModel)]="category">
-      <mat-option value="Plumbing">Plumbing</mat-option>
-      <mat-option value="Electrical">Electrical</mat-option>
-      <mat-option value="Painting">Painting</mat-option>
-      <mat-option value="Other">Other</mat-option>
-    </mat-select>
+    <select [(ngModel)]="category" name="category" class="full-width">
+      <option value="">-- Select Category --</option>
+      <option value="Plumbing">Plumbing</option>
+      <option value="Electrical">Electrical</option>
+      <option value="Painting">Painting</option>
+      <option value="Other">Other</option>
+    </select>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Description</mat-label>
-    <textarea matInput rows="4" [(ngModel)]="description"></textarea>
+      <textarea
+        matInput
+        rows="4"
+        [(ngModel)]="description"
+        name="description"
+        class="full-width"
+        style="resize:none; width:100%"
+      ></textarea>
   </mat-form-field>
+  <div class="full-width" style="margin-top: 8px">
+    <label>Optional Photo/Video</label>
+    <input
+      type="file"
+      (change)="onFileChange($event)"
+      accept="image/*,video/*"
+    />
+    <div *ngIf="mediaPreview" style="margin-top: 8px">
+      <img
+        *ngIf="mediaPreview && mediaPreview.startsWith('data:image')"
+        [src]="mediaPreview"
+        alt="preview"
+        style="max-width: 200px"
+      />
+      <video
+        *ngIf="mediaPreview && mediaPreview.startsWith('data:video')"
+        [src]="mediaPreview"
+        controls
+        style="max-width: 200px"
+      ></video>
+    </div>
+  </div>
 
   <button mat-raised-button color="primary" (click)="submitRequest()">
     Submit Request

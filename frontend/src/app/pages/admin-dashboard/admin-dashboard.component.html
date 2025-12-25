@@ -3,7 +3,7 @@
   <p>{{ r.description }}</p>
   <p>Status: {{ r.status }}</p>
 
-  <mat-select #tech [value]="technicians[0]?.id">
+  <mat-select #tech [value]="technicians.length ? technicians[0].id : null">
     <mat-option *ngFor="let t of technicians" [value]="t.id">
       {{ t.name }}
     </mat-option>

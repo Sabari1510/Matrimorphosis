@@ -1,7 +1,27 @@
-<mat-card *ngFor="let req of requests" style="margin-bottom: 16px;">
+<mat-card *ngFor="let req of requests" style="margin-bottom: 16px">
   <h3>{{ req.category }}</h3>
   <p>{{ req.description }}</p>
-  <p>Status: <b>{{ req.status }}</b></p>
+  <p>
+    Status: <b>{{ req.status }}</b>
+  </p>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Notes (optional)</mat-label>
+    <textarea
+      matInput
+      rows="3"
+      [(ngModel)]="localNotes[req.id]"
+      (ngModelChange)="onNotesChange(req.id, $event)"
+    ></textarea>
+  </mat-form-field>
+
+  <div style="margin: 8px 0">
+    <label>Optional Photo/Video</label>
+    <input
+      type="file"
+      (change)="onFileChange(req.id, $event)"
+      accept="image/*,video/*"
+    />
+  </div>
 
   <mat-select
     [(ngModel)]="req.status"
@@ -12,4 +32,3 @@
     <mat-option value="Resolved">Resolved</mat-option>
   </mat-select>
 </mat-card>
-

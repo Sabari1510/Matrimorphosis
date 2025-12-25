@@ -3,7 +3,10 @@ import { db } from "../db/mysql";
 
 export const createRequest = async (req: Request, res: Response) => {
   try {
-    const { resident_id, category, description, media } = req.body;
+    const { resident_id, category, description } = req.body;
+    // If file uploaded via multer, use its path
+    const file = (req as any).file;
+    const media = file ? `/uploads/${file.filename}` : req.body.media || null;
 
     const allowedCategories = ["Plumbing", "Electrical", "Painting", "Other"];
 
@@ -16,7 +19,7 @@ export const createRequest = async (req: Request, res: Response) => {
 
     const [result] = await db.execute(
       "INSERT INTO requests (resident_id, category, description, media, status) VALUES (?, ?, ?, ?, ?)",
-      [resident_id, category, description, media, 'New']
+      [resident_id, category, description, media, "New"]
     );
 
     const insertedId = (result as any).insertId;
@@ -75,24 +78,62 @@ export const getRequestsByTechnician = async (req: Request, res: Response) => {
 export const updateRequestStatus = async (req: Request, res: Response) => {
   try {
     const { requestId } = req.params;
-    const { status } = req.body;
+    // Support multipart/form-data with files and notes
+    const status = req.body.status;
+    const technician_notes = req.body.technician_notes || null;
+
+    // Debug/logging to help diagnose missing DB updates
+    console.log("UpdateStatus payload:", { requestId, body: req.body });
+    console.log(
+      "Files present:",
+      (req as any).files ? (req as any).files.length : 0
+    );
 
     const allowedStatus = ["Assigned", "In-Progress", "Resolved"];
 
     if (!allowedStatus.includes(status)) {
-      return res.status(400).json({
-        message: "Invalid status value",
-      });
+      return res.status(400).json({ message: "Invalid status value" });
     }
 
-    await db.execute("UPDATE requests SET status = ? WHERE id = ?", [
-      status,
-      requestId,
-    ]);
+    // If files uploaded via multer (technician_media), store paths as JSON string
+    // Collect technician_media either from uploaded files or from body (if client sent paths)
+    const files = (req as any).files as Express.Multer.File[] | undefined;
+    let technician_media: string | null = null;
 
-    return res.status(200).json({
-      message: "Request status updated successfully",
-    });
+    if (files && files.length > 0) {
+      const paths = files.map((f) => `/uploads/${f.filename}`);
+      technician_media = JSON.stringify(paths);
+    } else if (req.body.technician_media) {
+      // If client provided a JSON string or comma-separated paths
+      try {
+        if (typeof req.body.technician_media === "string") {
+          // if it's already a JSON array string, keep it; otherwise wrap single path
+          const maybe = req.body.technician_media;
+          if (maybe.trim().startsWith("[")) {
+            technician_media = maybe;
+          } else {
+            // single path or comma-separated
+            const arr = maybe.includes(",")
+              ? maybe.split(",").map((s: string) => s.trim())
+              : [maybe.trim()];
+            technician_media = JSON.stringify(arr);
+          }
+        } else if (Array.isArray(req.body.technician_media)) {
+          technician_media = JSON.stringify(req.body.technician_media);
+        }
+      } catch (e) {
+        console.error("Failed to parse technician_media from body", e);
+      }
+    }
+
+    await db.execute(
+      "UPDATE requests SET status = ?, technician_notes = ?, technician_media = ? WHERE id = ?",
+      [status, technician_notes, technician_media, requestId]
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Request status updated successfully" });
   } catch (error) {
     console.error("Update status error:", error);
     return res.status(500).json({
@@ -130,7 +171,7 @@ export const assignTechnician = async (req: Request, res: Response) => {
 export const submitFeedback = async (req: Request, res: Response) => {
   try {
     const { requestId } = req.params;
-    const { rating } = req.body;
+    const { rating, comment } = req.body;
 
     if (rating < 1 || rating > 5) {
       return res.status(400).json({
@@ -156,10 +197,10 @@ export const submitFeedback = async (req: Request, res: Response) => {
       });
     }
 
-    await db.execute("UPDATE requests SET feedback_rating = ? WHERE id = ?", [
-      rating,
-      requestId,
-    ]);
+    await db.execute(
+      "UPDATE requests SET feedback_rating = ?, feedback_comment = ? WHERE id = ?",
+      [rating, comment || null, requestId]
+    );
 
     return res.status(200).json({
       message: "Feedback submitted successfully",
@@ -171,8 +212,3 @@ export const submitFeedback = async (req: Request, res: Response) => {
     });
   }
 };
-
-
-
-
-

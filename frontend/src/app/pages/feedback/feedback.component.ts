@@ -6,6 +6,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MaintenanceService } from '../../services/maintenance.service';
 
 @Component({
@@ -18,12 +20,15 @@ import { MaintenanceService } from '../../services/maintenance.service';
     MatSelectModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   templateUrl: './feedback.component.html',
 })
 export class FeedbackComponent {
   requestId!: number;
   rating: number | null = null;
+  comment: string = '';
 
   ratings = [1, 2, 3, 4, 5];
 
@@ -42,9 +47,8 @@ export class FeedbackComponent {
       });
       return;
     }
-
     this.maintenanceService
-      .submitFeedback(this.requestId, this.rating)
+      .submitFeedback(this.requestId, this.rating, this.comment)
       .subscribe({
         next: () => {
           this.snackBar.open('Feedback submitted successfully', 'Close', {

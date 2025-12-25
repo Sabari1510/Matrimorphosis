@@ -28,6 +28,8 @@ import { MaintenanceService } from '../../services/maintenance.service';
 export class MaintenanceRequestComponent {
   category = '';
   description = '';
+  mediaFile: File | null = null;
+  mediaPreview: string | null = null;
 
   constructor(
     private maintenanceService: MaintenanceService,
@@ -42,20 +44,23 @@ export class MaintenanceRequestComponent {
       return;
     }
 
-    const payload = {
-      resident_id: 3, // ✅ EXISTS IN USERS TABLE
-      category: this.category,
-      description: this.description,
-      media: null,
-    };
+    const form = new FormData();
+    form.append('resident_id', String(3));
+    form.append('category', this.category);
+    form.append('description', this.description);
+    if (this.mediaFile) {
+      form.append('media', this.mediaFile, this.mediaFile.name);
+    }
 
-    this.maintenanceService.createRequest(payload).subscribe({
+    this.maintenanceService.createRequest(form).subscribe({
       next: () => {
         this.snackBar.open('Request submitted successfully', 'Close', {
           duration: 3000,
         });
         this.category = '';
         this.description = '';
+        this.mediaFile = null;
+        this.mediaPreview = null;
       },
       error: (err) => {
         console.error(err);
@@ -64,5 +69,14 @@ export class MaintenanceRequestComponent {
         });
       },
     });
+  }
+
+  onFileChange(event: any) {
+    const file: File = event.target.files[0];
+    if (!file) return;
+    this.mediaFile = file;
+    const reader = new FileReader();
+    reader.onload = () => (this.mediaPreview = reader.result as string);
+    reader.readAsDataURL(file);
   }
 }

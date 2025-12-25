@@ -2,7 +2,6 @@
   <h2>My Maintenance Requests</h2>
 
   <table mat-table [dataSource]="requests" class="mat-elevation-z8 full-width">
-
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>ID</th>
       <td mat-cell *matCellDef="let row">{{ row.id }}</td>
@@ -26,31 +25,31 @@
     <ng-container matColumnDef="created_at">
       <th mat-header-cell *matHeaderCellDef>Created At</th>
       <td mat-cell *matCellDef="let row">
-        {{ row.created_at | date:'short' }}
+        {{ row.created_at | date : "short" }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="feedback">
-  <th mat-header-cell *matHeaderCellDef>Feedback</th>
-  <td mat-cell *matCellDef="let row">
-    <button
-      mat-button
-      color="accent"
-      *ngIf="row.status === 'Resolved' && !row.feedback_rating"
-      [routerLink]="['/feedback', row.id]"
-    >
-      Give Feedback
-    </button>
+      <th mat-header-cell *matHeaderCellDef>Feedback</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          mat-button
+          color="accent"
+          *ngIf="row.status === 'Resolved' && !row.feedback_rating"
+          [routerLink]="['/feedback', row.id]"
+        >
+          Give Feedback
+        </button>
 
-    <span *ngIf="row.feedback_rating">
-      ⭐ {{ row.feedback_rating }}
-    </span>
-  </td>
-</ng-container>
-
+        <span *ngIf="row.feedback_rating">
+          <ng-container *ngFor="let _ of getStars(row.feedback_rating)">
+            ⭐
+          </ng-container>
+        </span>
+      </td>
+    </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </mat-card>

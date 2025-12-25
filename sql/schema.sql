@@ -15,6 +15,10 @@ CREATE TABLE IF NOT EXISTS requests (
   description TEXT NOT NULL,
   media VARCHAR(1024),
   status ENUM('New','Assigned','In-Progress','Resolved') NOT NULL DEFAULT 'New',
+  feedback_rating INT NULL,
+  feedback_comment TEXT NULL,
+  technician_notes TEXT NULL,
+  technician_media TEXT NULL,
   technician_id INT UNSIGNED NULL, -- technician_id references users(id)
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)

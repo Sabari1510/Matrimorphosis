@@ -8,9 +8,12 @@
   </mat-select>
 
   <br /><br />
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Optional Comment</mat-label>
+    <textarea matInput rows="3" [(ngModel)]="comment"></textarea>
+  </mat-form-field>
 
   <button mat-raised-button color="primary" (click)="submitFeedback()">
     Submit Feedback
   </button>
 </mat-card>
-
