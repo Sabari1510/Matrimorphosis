@@ -1,0 +1,57 @@
+# Documentation files (excluding README.md at root)
+*.md
+!README.md
+
+# SQL Schema files
+*.sql
+backend/sql/
+backend/backend/sql/
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Angular specific
+frontend/.angular/
+frontend/dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+
+# PDF files (if not needed in repo)
+*.pdf
