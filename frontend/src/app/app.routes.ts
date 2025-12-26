@@ -9,27 +9,14 @@ import { RequestHistoryComponent } from './maintenance/request-history/request-h
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+    // Default redirect to login
     { path: '', redirectTo: '/login', pathMatch: 'full' },
+
+    // Authentication routes
     { path: 'login', component: LoginComponent },
     { path: 'signup', component: SignupComponent },
-    {
-        path: 'resident-dashboard',
-        component: ResidentDashboardComponent,
-        canActivate: [authGuard],
-        data: { roles: ['Resident', 'Admin'] }
-    },
-    {
-        path: 'technician/dashboard',
-        component: TechnicianDashboardComponent,
-        canActivate: [authGuard],
-        data: { roles: ['Technician', 'Admin'] }
-    },
-    {
-        path: 'admin/dashboard',
-        component: AdminDashboardComponent,
-        canActivate: [authGuard],
-        data: { roles: ['Admin'] }
-    },
+
+    // Maintenance routes (Mandatory as per specification)
     {
         path: 'maintenance/new',
         component: MaintenanceRequestComponent,
@@ -42,5 +29,29 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Resident', 'Admin', 'Technician'] }
     },
+
+    // Dashboard routes (Mandatory as per specification)
+    {
+        path: 'technician/dashboard',
+        component: TechnicianDashboardComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Technician', 'Admin'] }
+    },
+    {
+        path: 'admin/dashboard',
+        component: AdminDashboardComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Admin'] }
+    },
+
+    // Additional route - Resident dashboard
+    {
+        path: 'resident-dashboard',
+        component: ResidentDashboardComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Resident', 'Admin'] }
+    },
+
+    // Wildcard route - redirect to login
     { path: '**', redirectTo: '/login' }
 ];
