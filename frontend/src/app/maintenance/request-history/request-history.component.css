@@ -26,6 +26,26 @@
     gap: 20px;
 }
 
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: #FFD93D;
+}
+
+.back-button svg {
+    width: 18px;
+    height: 18px;
+}
+
 .header-icon {
     display: none;
 }
@@ -42,6 +62,12 @@
     font-size: 14px;
     color: #64748b;
     font-weight: 400;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .header-stats {
@@ -112,16 +138,25 @@
     gap: 20px;
 }
 
+.status-deleted {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
 /* Request Card */
 .request-card {
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    border-radius: 12px;
+    border: 1px solid #edf2f7;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border-color: #cbd5e0;
 }
 

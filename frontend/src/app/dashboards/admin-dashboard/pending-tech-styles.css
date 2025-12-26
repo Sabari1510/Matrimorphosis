@@ -1,0 +1,107 @@
+
+/* Pending Technicians Section */
+.pending-technicians-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.technician-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tech-info {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.tech-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.tech-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #FFD93D;
+    color: #2C3E50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.tech-details h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2C3E50;
+}
+
+.tech-details p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.tech-specialization {
+    color: #FFD93D !important;
+    font-weight: 600 !important;
+}
+
+.tech-employee-id {
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+}
+
+.tech-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+    flex: 1;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    flex: 1;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.badge {
+    background: #FFD93D;
+    color: #2C3E50;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}

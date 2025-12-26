@@ -1,0 +1,96 @@
+<app-navbar></app-navbar>
+
+<div class="technician-detail-page">
+    <div class="detail-container">
+        <!-- Back Button -->
+        <button class="back-button" (click)="goBack()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+        </button>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+            <p>Loading technician details...</p>
+        </div>
+
+        <!-- Technician Not Found -->
+        <div *ngIf="!isLoading && !technician" class="error-state">
+            <h2>Technician Not Found</h2>
+            <p>The requested technician could not be found.</p>
+        </div>
+
+        <!-- Technician Details -->
+        <div *ngIf="!isLoading && technician" class="detail-card">
+            <div class="detail-header">
+                <h1>Technician Approval Request</h1>
+                <span class="status-badge pending">Pending Approval</span>
+            </div>
+
+            <div class="detail-content">
+                <!-- Profile Section -->
+                <div class="profile-section">
+                    <div class="profile-photo">
+                        <img *ngIf="technician.photo" [src]="getMediaUrl(technician.photo)" alt="{{technician.name}}">
+                        <div *ngIf="!technician.photo" class="photo-placeholder">
+                            {{ technician.name.charAt(0) }}
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <h2>{{ technician.name }}</h2>
+                        <p class="specialization" *ngIf="technician.specialization">
+                            {{ technician.specialization | titlecase }} Specialist
+                        </p>
+                        <p class="specialization" *ngIf="!technician.specialization">
+                            General Maintenance
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Employee ID</label>
+                        <p>{{ technician.employee_id || 'N/A' }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Specialization</label>
+                        <p class="highlight">{{ technician.specialization | titlecase }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Contact Email</label>
+                        <p>{{ technician.contact_info }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Phone Number</label>
+                        <p>{{ technician.phone || 'N/A' }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Registration Date</label>
+                        <p>{{ technician.created_at | date:'medium' }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Account Status</label>
+                        <p><span class="status-badge pending">Pending Verification</span></p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-section">
+                    <button class="btn btn-success" (click)="approveTechnician()">
+                        ✓ Approve Technician
+                    </button>
+                    <button class="btn btn-danger" (click)="rejectTechnician()">
+                        ✗ Reject Application
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

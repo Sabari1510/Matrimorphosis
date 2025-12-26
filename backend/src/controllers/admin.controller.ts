@@ -10,7 +10,7 @@ export const getPendingTechnicians = async (req: AuthRequest, res: Response) => 
     try {
         const pendingTechs = await userRepository.find({
             where: { role: 'Technician' as any, verified: false },
-            select: ['id', 'name', 'contact_info', 'created_at']
+            select: ['id', 'name', 'contact_info', 'created_at', 'employee_id', 'phone', 'photo', 'specialization']
         });
 
         res.json(pendingTechs);
@@ -60,5 +60,33 @@ export const rejectTechnician = async (req: AuthRequest, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error rejecting technician' });
+    }
+};
+
+// Delete a staff member (verified technician)
+export const deleteStaff = async (req: AuthRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: 'Staff ID is required' });
+        }
+
+        // Check if user exists and is a technician
+        const user = await userRepository.findOne({ where: { id: parseInt(id) } });
+        if (!user) {
+            return res.status(404).json({ message: 'Staff member not found' });
+        }
+
+        if (user.role !== 'Technician') {
+            return res.status(400).json({ message: 'Only technician accounts can be deleted from here' });
+        }
+
+        await userRepository.delete(parseInt(id));
+
+        res.json({ message: 'Staff member deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error deleting staff member' });
     }
 };

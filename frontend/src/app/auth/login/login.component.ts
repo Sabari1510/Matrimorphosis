@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
     styleUrl: './login.component.css'
 })
 export class LoginComponent {
-    username = '';
+    email = '';
     password = '';
     errorMessage = '';
     isLoading = false;
@@ -23,15 +23,15 @@ export class LoginComponent {
     ) { }
 
     onSubmit(): void {
-        if (!this.username || !this.password) {
-            this.errorMessage = 'Please enter both username and password';
+        if (!this.email || !this.password) {
+            this.errorMessage = 'Please enter both email and password';
             return;
         }
 
         this.isLoading = true;
         this.errorMessage = '';
 
-        this.authService.login({ contact_info: this.username, password: this.password }).subscribe({
+        this.authService.login({ contact_info: this.email, password: this.password }).subscribe({
             next: (response) => {
                 this.isLoading = false;
                 // Redirect based on role

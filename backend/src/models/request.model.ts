@@ -68,6 +68,15 @@ export class Request {
     @Column('text', { nullable: true })
     feedback_comments!: string;
 
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    completion_media?: string | null; // Proof of work from technician
+
     @CreateDateColumn()
     created_at!: Date;
+
+    @Column({ default: false })
+    is_deleted!: boolean;
+
+    @Column({ nullable: true })
+    deleted_by_role!: string;
 }

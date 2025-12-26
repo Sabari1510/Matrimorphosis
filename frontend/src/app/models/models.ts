@@ -22,6 +22,7 @@ export interface MaintenanceRequest {
   technician?: any;
   apartmentNumber?: string;
   residentName?: string;
+  technicianName?: string;
   assignedTo?: string;
   resolvedBy?: string;
   resolvedDate?: string;
@@ -30,6 +31,8 @@ export interface MaintenanceRequest {
   resolutionPhotos?: string[];
   photos?: string[];
   createdDate?: Date; // Legacy field for compatibility
+  is_deleted?: boolean;
+  deleted_by_role?: string;
 }
 
 export type ComplaintCategory = RequestCategory;
@@ -40,4 +43,9 @@ export interface User {
   name: string;
   role: string;
   contact_info: string;
+  employee_id?: string;
+  specialization?: string;
+  phone?: string;
+  photo?: string;
+  verified?: boolean;
 }

@@ -28,3 +28,23 @@ export const getAllUsers = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ message: 'Error fetching users' });
     }
 }
+
+export const getTechniciansBySpecialization = async (req: AuthRequest, res: Response) => {
+    try {
+        const { specialization } = req.params;
+
+        const technicians = await userRepository.find({
+            where: {
+                role: UserRole.TECHNICIAN,
+                specialization: specialization as string,
+                verified: true // Only return verified technicians
+            },
+            select: ['id', 'name', 'contact_info', 'specialization', 'employee_id']
+        });
+
+        res.json(technicians);
+    } catch (error) {
+        console.error('Error fetching technicians by specialization:', error);
+        res.status(500).json({ message: 'Error fetching technicians' });
+    }
+};

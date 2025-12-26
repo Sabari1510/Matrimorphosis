@@ -37,6 +37,7 @@ import requestRoutes from './routes/request.routes';
 import userRoutes from './routes/user.routes';
 import adminRoutes from './routes/admin.routes';
 import technicianRoutes from './routes/technician.routes';
+import mediaRoutes from './routes/media.routes';
 
 // Route mappings matching specification
 app.use('/api/auth', authRoutes);
@@ -44,6 +45,7 @@ app.use('/api/maintenance', requestRoutes);  // MANDATORY: /maintenance/new, /ma
 app.use('/api/technician', technicianRoutes); // MANDATORY: /technician/dashboard
 app.use('/api/admin', adminRoutes);           // MANDATORY: /admin/dashboard
 app.use('/api/users', userRoutes);
+app.use('/api/media', mediaRoutes);
 
 // Routes Placeholder
 app.get('/', (req: Request, res: Response) => {

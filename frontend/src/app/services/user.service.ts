@@ -13,4 +13,12 @@ export class UserService {
     getTechnicians(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/technicians`);
     }
+
+    getTechniciansBySpecialization(specialization: string): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/technicians/${specialization}`);
+    }
+
+    getAllUsers(): Observable<any[]> {
+        return this.http.get<any[]>(this.apiUrl);
+    }
 }

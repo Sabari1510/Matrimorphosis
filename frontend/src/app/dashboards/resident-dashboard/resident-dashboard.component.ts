@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { RequestModalComponent } from '../../shared/request-modal/request-modal.component';
 import { RequestService } from '../../services/request.service';
 import { AuthService } from '../../services/auth.service';
 import { MaintenanceRequest, ComplaintCategory, ComplaintPriority } from '../../models/models';
@@ -26,7 +27,7 @@ interface PhotoFile {
 @Component({
     selector: 'app-resident-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterModule, NavbarComponent, ReactiveFormsModule],
+    imports: [CommonModule, RouterModule, NavbarComponent, ReactiveFormsModule, RequestModalComponent],
     templateUrl: './resident-dashboard.component.html',
     styleUrl: './resident-dashboard.component.css'
 })
@@ -36,6 +37,9 @@ export class ResidentDashboardComponent implements OnInit {
     selectedPhotos: PhotoFile[] = [];
     isSubmitting = false;
     unreadNotifications = 3;
+    userName: string = '';
+    userId: number = 0;
+    selectedRequest: any = null;
 
     stats = {
         total: 0,
@@ -66,7 +70,8 @@ export class ResidentDashboardComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private requestService: RequestService, // Changed from MaintenanceService
-        private authService: AuthService
+        private authService: AuthService,
+        private router: Router
     ) {
         this.complaintForm = this.fb.group({
             category: ['', Validators.required],
@@ -77,6 +82,14 @@ export class ResidentDashboardComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        // Get user name from localStorage token
+        const token = localStorage.getItem('token');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            this.userName = payload.name || 'User';
+            this.userId = payload.userId || 0;
+        }
+
         this.loadRequests();
     }
 
@@ -148,5 +161,40 @@ export class ResidentDashboardComponent implements OnInit {
             day: 'numeric',
             year: 'numeric'
         });
+    }
+
+    viewRequestDetails(request: any): void {
+        this.selectedRequest = request;
+    }
+
+    closeRequestModal(): void {
+        this.selectedRequest = null;
+    }
+
+    // Quick action navigation methods
+    openNewRequestModal(): void {
+        // Navigate to new request page using Angular Router
+        this.router.navigate(['/maintenance/new']);
+    }
+
+    trackRequests(): void {
+        // Scroll to requests section
+        const requestsSection = document.querySelector('.requests-section');
+        if (requestsSection) {
+            requestsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    viewHistory(): void {
+        // Navigate to history page using Angular Router
+        this.router.navigate(['/maintenance/history']);
+    }
+
+    contactSupport(): void {
+        // Scroll to contact card
+        const contactCard = document.querySelector('.contact-card');
+        if (contactCard) {
+            contactCard.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 }

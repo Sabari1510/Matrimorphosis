@@ -3,13 +3,14 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AppDataSource } from '../config/database';
 import { User, UserRole } from '../models/user.model';
+import Media from '../models/media.schema';
 import Log from '../models/log.schema';
 
 const userRepository = AppDataSource.getRepository(User);
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { name, email, password, role, contact_info, employee_id, phone } = req.body;
+        const { name, email, password, role, contact_info, employee_id, phone, specialization } = req.body;
 
         // Check if user exists (using contact_info or name as unique identifier since email isn't in schema?)
         // Wait, the schema in PDF didn't specify email, but 'contact_info'.
@@ -19,22 +20,42 @@ export const register = async (req: Request, res: Response) => {
         // Check if contact_info already exists
         const existingUser = await userRepository.findOne({ where: { contact_info } });
         if (existingUser) {
-            return res.status(400).json({ message: 'User with this contact info already exists' });
+            return res.status(400).json({ message: 'User with this email already exists' });
+        }
+
+        // Password constraints: min 6 chars, 1 alphabet, 1 number
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                message: 'Password must be at least 6 characters long and contain at least one letter and one number'
+            });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Get uploaded photo path if exists
-        const photoPath = (req as any).file ? `/uploads/${(req as any).file.filename}` : null;
+        // Create media in MongoDB if photo exists
+        let photoId = null;
+        if ((req as any).file) {
+            const media = new Media({
+                filename: (req as any).file.originalname,
+                contentType: (req as any).file.mimetype,
+                data: (req as any).file.buffer
+            });
+            const savedMedia = await media.save();
+            photoId = savedMedia._id.toString();
+        }
 
         const user = new User();
+
         user.name = name;
         user.contact_info = contact_info;
         user.password = hashedPassword;
         user.role = role || UserRole.RESIDENT;
         user.employee_id = employee_id || null;
         user.phone = phone || null;
-        user.photo = photoPath;
+        user.photo = photoId;
+
+        user.specialization = (role === UserRole.TECHNICIAN && specialization) ? specialization : null;
 
         // Technicians require admin verification, others are auto-verified
         user.verified = user.role === UserRole.TECHNICIAN ? false : true;

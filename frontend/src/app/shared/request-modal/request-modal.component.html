@@ -1,0 +1,119 @@
+<div class="modal-backdrop" (click)="close.emit()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <div class="header-main">
+                <span class="request-id">#{{ request.id }}</span>
+                <h2>{{ request.title }}</h2>
+            </div>
+            <button class="close-btn" (click)="close.emit()">×</button>
+        </header>
+
+        <div class="modal-body">
+            <div class="grid-layout">
+                <!-- Left Column: Primary Content -->
+                <div class="main-content">
+                    <section class="info-section">
+                        <h3>Description</h3>
+                        <p class="description-text">{{ request.description }}</p>
+                    </section>
+
+                    <section class="media-section" *ngIf="request.media">
+                        <h3>Issue Photo</h3>
+                        <div class="image-preview">
+                            <img [src]="getMediaUrl(request.media)" alt="Issue">
+                        </div>
+                    </section>
+
+                    <section class="media-section" *ngIf="request.status === 'Resolved' && request.completion_media">
+                        <h3>Completion Proof</h3>
+                        <div class="image-preview completion">
+                            <img [src]="getMediaUrl(request.completion_media)" alt="Resolved"
+                                (error)="handleImageError($event, 'image')">
+                        </div>
+                    </section>
+
+                    <!-- Technician View: Resident Details -->
+                    <section class="people-section" *ngIf="userRole === 'Technician' && request.resident">
+                        <h3>Resident Details</h3>
+                        <div class="person-card">
+                            <div class="person-info">
+                                <p><strong>Name:</strong> {{ request.resident.name }}</p>
+                                <p><strong>Location:</strong> {{ request.location }}</p>
+                                <p><strong>Email:</strong> {{ request.resident.contact_info }}</p>
+                                <p><strong>Mobile:</strong> {{ request.resident.phone || 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Resident View: Technician Details -->
+                    <section class="people-section" *ngIf="userRole === 'Resident' && request.technician">
+                        <h3>Assigned Technician</h3>
+                        <div class="person-card">
+                            <div class="avatar-small">
+                                <img *ngIf="request.technician.photo" [src]="getMediaUrl(request.technician.photo)"
+                                    [alt]="request.technician.name" (error)="handleImageError($event, 'avatar')">
+                                <div *ngIf="!request.technician.photo" class="placeholder">{{
+                                    request.technician.name.charAt(0) }}</div>
+                            </div>
+                            <div class="person-info">
+                                <p><strong>Name:</strong> {{ request.technician.name }}</p>
+                                <p><strong>Specialty:</strong> {{ request.category | titlecase }}</p>
+                                <p><strong>Contact:</strong> {{ request.technician.phone || 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column: Sidebar Stats & Actions -->
+                <div class="sidebar">
+                    <div class="stat-group">
+                        <label>Status</label>
+                        <span class="status-badge" [ngClass]="request.status">{{ request.status }}</span>
+                    </div>
+                    <div class="stat-group">
+                        <label>Priority</label>
+                        <span class="priority-badge" [ngClass]="request.priority">{{ request.priority }}</span>
+                    </div>
+                    <div class="stat-group">
+                        <label>Category</label>
+                        <span class="category-tag">{{ request.category }}</span>
+                    </div>
+                    <div class="stat-group">
+                        <label>Reported On</label>
+                        <span class="date-text">{{ request.created_at | date:'medium' }}</span>
+                    </div>
+
+                    <!-- Role-Specific Action: Resolve Task -->
+                    <div class="action-card" *ngIf="userRole === 'Technician' && request.status === 'In-Progress'">
+                        <h4>Complete Work Order</h4>
+                        <div class="upload-area">
+                            <input type="file" (change)="onFileSelected($event)" accept="image/*" id="completionPhoto">
+                            <p class="file-label" *ngIf="selectedFile">{{ selectedFile.name }}</p>
+                            <label for="completionPhoto" class="upload-btn" *ngIf="!selectedFile">📷 Upload
+                                Proof</label>
+                        </div>
+                        <button class="btn btn-primary resolve-btn" [disabled]="!selectedFile || isSubmitting"
+                            (click)="submitResolution()">
+                            {{ isSubmitting ? 'Processing...' : 'Mark as Resolved' }}
+                        </button>
+                    </div>
+
+                    <!-- Role-Specific Action: Feedback -->
+                    <div class="action-card" *ngIf="userRole === 'Resident' && request.status === 'Resolved'">
+                        <h4>Service Feedback</h4>
+                        <div class="star-rating">
+                            <span *ngFor="let s of stars" [class.active]="s <= rating" (click)="setRating(s)">★</span>
+                        </div>
+                        <textarea *ngIf="!request.feedback_rating" [(ngModel)]="comments"
+                            placeholder="How was the service? (Optional)" [disabled]="isSubmitting"></textarea>
+                        <p class="feedback-saved" *ngIf="request.feedback_rating">"{{ request.feedback_comments }}"</p>
+                        <button class="btn btn-primary feedback-btn" *ngIf="!request.feedback_rating"
+                            [disabled]="rating === 0 || isSubmitting" (click)="submitFeedback()">
+                            {{ isSubmitting ? 'Submitting...' : 'Submit Rating' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,135 @@
+<app-navbar></app-navbar>
+
+<div class="manage-page">
+    <div class="container">
+        <header class="page-header">
+            <div>
+                <h1>Manage Requests</h1>
+                <p>View and manage all maintenance requests across the property</p>
+            </div>
+            <button class="btn btn-primary" routerLink="/admin/dashboard">Back to Dashboard</button>
+        </header>
+
+        <!-- Filters Section -->
+        <div class="filters-card">
+            <div class="search-box">
+                <input type="text" [(ngModel)]="searchQuery" (input)="applyFilters()"
+                    placeholder="Search by ID or Title...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="filters-grid">
+                <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+                    <option value="">All Statuses</option>
+                    <option value="New">New</option>
+                    <option value="Assigned">Assigned</option>
+                    <option value="In-Progress">In-Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+                <select [(ngModel)]="selectedPriority" (change)="applyFilters()">
+                    <option value="">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+                <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+                    <option value="">All Categories</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="hvac">HVAC</option>
+                    <option value="appliance">Appliance</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Resident</th>
+                            <th>Technician</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let request of filteredRequests" class="clickable-row">
+                            <td>#{{ request.id }}</td>
+                            <td>{{ request.title }}</td>
+                            <td>{{ request.residentName || request.resident?.name }}</td>
+                            <td>{{ request.technicianName || request.technician?.name || 'Unassigned' }}</td>
+                            <td>
+                                <span class="priority-badge" [ngClass]="request.priority">
+                                    {{ request.priority }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+                                    {{ request.status }}
+                                </span>
+                            </td>
+                            <td>{{ formatDate(request.created_at) }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" (click)="viewRequestDetails(request)"
+                                        title="View">👁️</button>
+                                    <button class="btn-icon" (click)="openAssignModal(request)"
+                                        *ngIf="request.status !== 'Resolved'" title="Assign">👤</button>
+                                    <button class="btn-icon delete" (click)="deleteRequest($event, request.id)"
+                                        title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="filteredRequests.length === 0">
+                            <td colspan="8" class="empty-state">No requests found matching your filters.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Modal -->
+<div class="modal-overlay" *ngIf="showAssignModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Assign Technician</h3>
+            <button class="close-btn" (click)="closeAssignModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="request-summary" *ngIf="selectedRequest">
+                <p><strong>Request:</strong> {{ selectedRequest.title }}</p>
+                <p><strong>Category:</strong> {{ selectedRequest.category | titlecase }}</p>
+            </div>
+
+            <div class="technician-list">
+                <h4>Select Technician</h4>
+                <p class="helper-text">Only verified technicians are listed here.</p>
+
+                <div class="tech-row" *ngFor="let tech of technicians">
+                    <div class="tech-info">
+                        <span class="tech-name">{{ tech.name }}</span>
+                        <span class="tech-id">ID: {{ tech.employee_id || 'N/A' }} | {{ tech.specialization || 'General'
+                            }}</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" (click)="assignTechnician(tech.id)">Assign</button>
+                </div>
+
+                <div *ngIf="technicians.length === 0" class="empty-list">
+                    No verified technicians found.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Details Modal -->
+<app-request-modal *ngIf="selectedDetailRequest" [request]="selectedDetailRequest" (close)="closeDetailModal()">
+</app-request-modal>

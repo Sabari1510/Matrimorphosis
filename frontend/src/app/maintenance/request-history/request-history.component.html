@@ -10,10 +10,18 @@
                     <p class="header-subtitle">View all maintenance requests and their status</p>
                 </div>
             </div>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <span class="stat-value">{{ requests.length }}</span>
-                    <span class="stat-label">Total</span>
+            <div class="header-right">
+                <a routerLink="/resident-dashboard" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    Back to Dashboard
+                </a>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ requests.length }}</span>
+                        <span class="stat-label">Total</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -26,15 +34,23 @@
         </div>
 
         <div *ngIf="!isLoading && requests.length > 0" class="requests-grid">
-            <div *ngFor="let request of requests" class="request-card">
+            <div *ngFor="let request of requests" class="request-card" (click)="viewRequestDetails(request)">
                 <div class="card-header">
                     <div class="header-left">
                         <span class="request-id">{{ request.id }}</span>
                         <span class="category-badge">{{ getCategoryLabel(request.category) }}</span>
                     </div>
-                    <span class="status-badge" [class]="'status-' + request.status">
+                    <span *ngIf="!request.is_deleted" class="status-badge" [class]="'status-' + request.status">
                         {{ formatStatus(request.status) }}
                     </span>
+                    <span *ngIf="request.is_deleted && request.deleted_by_role === 'Admin'"
+                        class="status-badge status-deleted">
+                        Deleted by Admin
+                    </span>
+                    <button class="delete-btn" (click)="deleteRequest($event, request.id)"
+                        *ngIf="request.status !== 'Resolved' && !request.is_deleted" title="Delete Request">
+                        🗑️
+                    </button>
                 </div>
 
                 <div class="card-body">
@@ -49,8 +65,8 @@
                             </span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">Apartment:</span>
-                            <span class="meta-value">{{ request.apartmentNumber }}</span>
+                            <span class="meta-label">Location:</span>
+                            <span class="meta-value">{{ request.location }}</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Submitted:</span>
@@ -103,4 +119,9 @@
             <a routerLink="/resident-dashboard" class="btn btn-primary">Go to Dashboard</a>
         </div>
     </div>
+
+    <!-- Request Detail Modal -->
+    <app-request-modal *ngIf="selectedDetailRequest" [request]="selectedDetailRequest" [userRole]="'Resident'"
+        [userId]="userId" (close)="closeDetailModal()" (updated)="loadRequests()">
+    </app-request-modal>
 </main>

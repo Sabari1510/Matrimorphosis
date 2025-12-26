@@ -1,9 +1,9 @@
 # Documentation files (excluding README.md at root)
-*.md
+**/*.md
 !README.md
 
 # SQL Schema files
-*.sql
+**/*.sql
 backend/sql/
 backend/backend/sql/
 

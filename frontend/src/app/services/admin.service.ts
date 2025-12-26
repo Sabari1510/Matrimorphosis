@@ -21,4 +21,8 @@ export class AdminService {
     rejectTechnician(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/reject-technician/${id}`);
     }
+
+    deleteStaff(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/staff/${id}`);
+    }
 }

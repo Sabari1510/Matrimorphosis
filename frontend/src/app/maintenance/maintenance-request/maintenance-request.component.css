@@ -20,6 +20,27 @@
     gap: 20px;
 }
 
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+    margin-right: 20px;
+}
+
+.back-button:hover {
+    color: #FFD93D;
+}
+
+.back-button svg {
+    width: 18px;
+    height: 18px;
+}
+
 .header-icon {
     display: none;
 }
@@ -116,7 +137,8 @@
 
 .form-control:focus {
     outline: none;
-    border-color: #2c5282;
+    border-color: #FFD93D;
+    box-shadow: 0 0 0 3px rgba(255, 217, 61, 0.1);
 }
 
 .form-control::placeholder {
@@ -165,8 +187,8 @@ textarea.form-control {
 }
 
 .category-card.active {
-    border-color: #2c5282;
-    background: #edf2f7;
+    border-color: #FFD93D;
+    background: #fffbf0;
 }
 
 .category-icon {
@@ -174,7 +196,7 @@ textarea.form-control {
     height: 48px;
     border-radius: 50%;
     background: #edf2f7;
-    color: #2c5282;
+    color: #2C3E50;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -183,8 +205,8 @@ textarea.form-control {
 }
 
 .category-card.active .category-icon {
-    background: #2c5282;
-    color: white;
+    background: #FFD93D;
+    color: #2C3E50;
 }
 
 .category-label {
@@ -195,7 +217,7 @@ textarea.form-control {
 }
 
 .category-card.active .category-label {
-    color: #2c5282;
+    color: #2C3E50;
     font-weight: 600;
 }
 
@@ -253,19 +275,27 @@ textarea.form-control {
 }
 
 .priority-option.active .priority-low {
-    border-color: #065f46;
+    border-color: #FFD93D;
+    background: #FFD93D;
+    color: #2C3E50;
 }
 
 .priority-option.active .priority-medium {
-    border-color: #92400e;
+    border-color: #FFD93D;
+    background: #FFD93D;
+    color: #2C3E50;
 }
 
 .priority-option.active .priority-high {
-    border-color: #9a3412;
+    border-color: #FFD93D;
+    background: #FFD93D;
+    color: #2C3E50;
 }
 
 .priority-option.active .priority-urgent {
-    border-color: #991b1b;
+    border-color: #FFD93D;
+    background: #FFD93D;
+    color: #2C3E50;
 }
 
 /* Upload Area */
@@ -280,19 +310,19 @@ textarea.form-control {
 }
 
 .upload-area:hover {
-    border-color: #2c5282;
-    background: #edf2f7;
+    border-color: #FFD93D;
+    background: #fffbf0;
 }
 
 .upload-icon {
     font-size: 32px;
-    color: #2c5282;
+    color: #2C3E50;
     margin-bottom: 8px;
 }
 
 .upload-text {
     font-size: 14px;
-    color: #2c5282;
+    color: #2C3E50;
     font-weight: 500;
 }
 
@@ -300,19 +330,21 @@ textarea.form-control {
 .btn-submit {
     width: 100%;
     padding: 12px 24px;
-    background: #cbd5e0;
-    color: #4a5568;
+    background: #FFD93D;
+    color: #2C3E50;
     border: none;
     border-radius: 6px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     margin-top: 8px;
 }
 
 .btn-submit:hover:not(:disabled) {
-    background: #a0aec0;
+    background: #ffd01a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
 }
 
 .btn-submit:disabled {

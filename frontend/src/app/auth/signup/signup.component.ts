@@ -16,13 +16,13 @@ export class SignupComponent {
         firstName: '',
         lastName: '',
         email: '',
-        username: '',
         password: '',
         confirmPassword: '',
         role: 'Resident', // Default to Resident
         apartmentNumber: '',
         phoneNumber: '',
-        employeeId: ''
+        employeeId: '',
+        specialization: ''
     };
 
     errorMessage = '';
@@ -62,10 +62,17 @@ export class SignupComponent {
             return;
         }
 
+        // Password constraints: min 6 chars, 1 alphabet, 1 number
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+        if (!passwordRegex.test(this.formData.password)) {
+            this.errorMessage = 'Password must be at least 6 characters long and contain at least one letter and one number';
+            return;
+        }
+
         // Validate technician-specific fields
         if (this.formData.role === 'Technician') {
-            if (!this.formData.employeeId || !this.formData.phoneNumber || !this.selectedPhoto) {
-                this.errorMessage = 'Technicians must provide Employee ID, Phone, and Photo';
+            if (!this.formData.employeeId || !this.formData.phoneNumber || !this.formData.specialization || !this.selectedPhoto) {
+                this.errorMessage = 'Technicians must provide Employee ID, Specialization, Phone, and Photo';
                 return;
             }
         }
@@ -84,6 +91,7 @@ export class SignupComponent {
         if (this.formData.role === 'Technician') {
             formData.append('employee_id', this.formData.employeeId);
             formData.append('phone', this.formData.phoneNumber);
+            formData.append('specialization', this.formData.specialization);
             if (this.selectedPhoto) {
                 formData.append('photo', this.selectedPhoto);
             }

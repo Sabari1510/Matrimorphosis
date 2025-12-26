@@ -1,0 +1,97 @@
+<app-navbar></app-navbar>
+
+<div class="manage-page">
+    <div class="container">
+        <header class="page-header">
+            <div>
+                <h1>Manage Staff</h1>
+                <p>Manage verified technicians and monitor their performance</p>
+            </div>
+            <button class="btn btn-primary" routerLink="/admin/dashboard">Back to Dashboard</button>
+        </header>
+
+        <!-- Filters Section -->
+        <div class="filters-card">
+            <div class="search-box">
+                <input type="text" [(ngModel)]="searchQuery" (input)="applyFilters()"
+                    placeholder="Search by name or Employee ID...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="filters-grid">
+                <select [(ngModel)]="selectedSpecialization" (change)="applyFilters()">
+                    <option value="">All Specializations</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="hvac">HVAC</option>
+                    <option value="painting">Painting</option>
+                    <option value="general">General</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Staff Member</th>
+                            <th>Specialization</th>
+                            <th>Assigned</th>
+                            <th>Completed</th>
+                            <th>Rating</th>
+                            <th>Success Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let staff of filteredStaff">
+                            <td>
+                                <div class="staff-info-cell">
+                                    <div class="staff-initials">{{ staff.initials }}</div>
+                                    <div class="staff-meta">
+                                        <div class="staff-name">{{ staff.name }}</div>
+                                        <div class="staff-id">ID: {{ staff.employee_id || 'N/A' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="specialization-tag" *ngIf="staff.specialization">
+                                    {{ staff.specialization | titlecase }}
+                                </span>
+                                <span class="no-data" *ngIf="!staff.specialization">General</span>
+                            </td>
+                            <td>{{ staff.assigned }}</td>
+                            <td>{{ staff.completed }}</td>
+                            <td>
+                                <div class="star-rating-sm" *ngIf="staff.avgRating > 0">
+                                    <span class="star">★</span> {{ staff.avgRating | number:'1.1-1' }}
+                                </div>
+                                <span class="no-data" *ngIf="staff.avgRating === 0">No ratings</span>
+                            </td>
+                            <td>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar"
+                                        [style.width.%]="staff.assigned > 0 ? (staff.completed / staff.assigned * 100) : 0">
+                                    </div>
+                                    <span>{{ staff.assigned > 0 ? (staff.completed / staff.assigned * 100 |
+                                        number:'1.0-0') : 0 }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" [routerLink]="['/admin/technician-detail', staff.id]"
+                                        title="View Details">👁️</button>
+                                    <button class="btn-icon delete" (click)="deleteStaff(staff.id)"
+                                        title="Delete Staff">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="filteredStaff.length === 0">
+                            <td colspan="7" class="empty-state">No staff members found matching your search.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

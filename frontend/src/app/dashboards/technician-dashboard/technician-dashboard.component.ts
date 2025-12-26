@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { RequestModalComponent } from '../../shared/request-modal/request-modal.component';
 import { RequestService } from '../../services/request.service';
 import { AuthService } from '../../services/auth.service';
 import { MaintenanceRequest } from '../../models/models';
@@ -25,7 +26,7 @@ interface WorkOrderExtended {
 @Component({
     selector: 'app-technician-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, NavbarComponent],
+    imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, RequestModalComponent],
     templateUrl: './technician-dashboard.component.html',
     styleUrl: './technician-dashboard.component.css'
 })
@@ -46,6 +47,10 @@ export class TechnicianDashboardComponent implements OnInit {
 
     completionRate = 0;
     overallProgress = 0;
+    userName: string = '';
+    specialization: string = '';
+    userId: number = 0;
+    selectedWorkOrder: any = null;
 
     categories = [
         { value: 'plumbing', label: 'Plumbing' },
@@ -65,6 +70,13 @@ export class TechnicianDashboardComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            this.userName = payload.name || 'Technician';
+            this.specialization = payload.specialization || '';
+            this.userId = payload.userId || 0;
+        }
         this.loadData();
     }
 
@@ -124,10 +136,12 @@ export class TechnicianDashboardComponent implements OnInit {
         this.updateStatus(order, 'In-Progress');
     }
 
-    markAsResolved(order: MaintenanceRequest): void {
-        if (confirm('Are you sure you want to mark this task as resolved?')) {
-            this.updateStatus(order, 'Resolved');
-        }
+    viewWorkOrder(order: MaintenanceRequest): void {
+        this.selectedWorkOrder = order;
+    }
+
+    closeModal(): void {
+        this.selectedWorkOrder = null;
     }
 
     getCategoryLabel(category: string): string {

@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { authenticateToken, authorizeRoles, AuthRequest } from '../middleware/auth.middleware';
-import { getPendingTechnicians, approveTechnician, rejectTechnician } from '../controllers/admin.controller';
+import { getPendingTechnicians, approveTechnician, rejectTechnician, deleteStaff } from '../controllers/admin.controller';
 import { UserRole } from '../models/user.model';
 
 const router = Router();
@@ -19,5 +19,6 @@ router.get('/dashboard', authenticateToken, authorizeRoles([UserRole.ADMIN]), (r
 router.get('/pending-technicians', authenticateToken, authorizeRoles([UserRole.ADMIN]), getPendingTechnicians);
 router.patch('/approve-technician/:id', authenticateToken, authorizeRoles([UserRole.ADMIN]), approveTechnician);
 router.delete('/reject-technician/:id', authenticateToken, authorizeRoles([UserRole.ADMIN]), rejectTechnician);
+router.delete('/staff/:id', authenticateToken, authorizeRoles([UserRole.ADMIN]), deleteStaff);
 
 export default router;

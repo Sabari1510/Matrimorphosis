@@ -5,22 +5,27 @@ import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { RequestService } from '../../services/request.service';
 import { AuthService } from '../../services/auth.service';
 import { MaintenanceRequest } from '../../models/models';
+import { RequestModalComponent } from '../../shared/request-modal/request-modal.component';
 
 @Component({
   selector: 'app-request-history',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, RequestModalComponent],
   templateUrl: './request-history.component.html',
   styleUrl: './request-history.component.css'
 })
 export class RequestHistoryComponent implements OnInit {
   requests: MaintenanceRequest[] = [];
+  selectedDetailRequest: MaintenanceRequest | null = null;
+  userId: number = 0;
   isLoading = true;
 
   constructor(
     private requestService: RequestService,
     private authService: AuthService
-  ) { }
+  ) {
+    this.userId = this.authService.getUser()?.id || 0;
+  }
 
   ngOnInit(): void {
     this.loadRequests();
@@ -41,6 +46,29 @@ export class RequestHistoryComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  viewRequestDetails(request: MaintenanceRequest): void {
+    this.selectedDetailRequest = request;
+  }
+
+  closeDetailModal(): void {
+    this.selectedDetailRequest = null;
+  }
+
+  deleteRequest(event: Event, requestId: number): void {
+    event.stopPropagation(); // Prevent opening modal
+
+    if (confirm('Are you sure you want to delete this maintenance request?')) {
+      this.requestService.deleteRequest(requestId).subscribe({
+        next: () => {
+          this.requests = this.requests.filter(r => r.id !== requestId);
+        },
+        error: (err) => {
+          alert(err.error?.message || 'Failed to delete request');
+        }
+      });
+    }
   }
 
   formatStatus(status: string): string {
@@ -72,5 +100,13 @@ export class RequestHistoryComponent implements OnInit {
       'other': 'Other'
     };
     return labels[category] || category;
+  }
+
+  getMediaUrl(path: string | null): string {
+    if (!path) return '';
+    if (path.startsWith('/uploads/')) {
+      return `http://localhost:3000${path}`;
+    }
+    return `http://localhost:3000/api/media/${path}`;
   }
 }

@@ -36,6 +36,9 @@ export class User {
     @Column({ type: 'varchar', length: 255, nullable: true })
     photo?: string | null; // Profile photo path
 
+    @Column({ type: 'varchar', length: 50, nullable: true })
+    specialization?: string; // Technician specialization: plumbing, electrical, hvac, etc.
+
     @Column({ default: true })
     verified!: boolean; // For staff verification - Technicians require admin approval
 
