@@ -6,16 +6,16 @@ import { upload } from '../config/upload';
 
 const router = Router();
 
-// Resident Routes - with file upload
-router.post('/', authenticateToken, authorizeRoles([UserRole.RESIDENT]), upload.single('media'), createRequest);
+// MANDATORY ROUTE: /maintenance/new - Submit new maintenance request
+// POST /api/maintenance/new
+router.post('/new', authenticateToken, authorizeRoles([UserRole.RESIDENT, UserRole.ADMIN]), upload.single('media'), createRequest);
 
-// Shared Routes (Resident sees own, Tech sees assigned, Admin sees all)
-router.get('/', authenticateToken, getRequests);
+// MANDATORY ROUTE: /maintenance/history - View past requests
+// GET /api/maintenance/history
+router.get('/history', authenticateToken, getRequests);
 
-// Technician/Admin Routes
+// Additional maintenance routes
 router.patch('/:id/status', authenticateToken, authorizeRoles([UserRole.TECHNICIAN, UserRole.ADMIN]), updateStatus);
-
-// Admin Routes
 router.patch('/:id/assign', authenticateToken, authorizeRoles([UserRole.ADMIN]), assignTechnician);
 
 export default router;
