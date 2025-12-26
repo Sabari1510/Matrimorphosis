@@ -1,0 +1,123 @@
+<app-navbar></app-navbar>
+
+<main class="form-main">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">✏️</div>
+                <div class="header-text">
+                    <h1>New Maintenance Request</h1>
+                    <p class="header-subtitle">Submit a new maintenance issue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <div class="form-card">
+            <h2 class="form-title">Request Details</h2>
+
+            <div *ngIf="successMessage" class="alert alert-success">
+                {{ successMessage }}
+            </div>
+
+            <div *ngIf="errorMessage" class="alert alert-error">
+                {{ errorMessage }}
+            </div>
+
+            <form (ngSubmit)="onSubmit()" class="request-form">
+                <!-- Category Selection Grid -->
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <div class="category-grid">
+                        <div *ngFor="let cat of categories" class="category-card"
+                            [class.active]="formData.category === cat.value" (click)="formData.category = cat.value">
+                            <div class="category-icon">{{ cat.icon }}</div>
+                            <span class="category-label">{{ cat.label }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title" class="form-label">Title *</label>
+                    <input type="text" id="title" name="title" [(ngModel)]="formData.title" class="form-control"
+                        placeholder="Brief description of the issue" [disabled]="isSubmitting" required />
+                </div>
+
+                <!-- Room/Flat Number and Building Name -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="roomNumber" class="form-label">Room/Flat Number *</label>
+                        <input type="text" id="roomNumber" name="roomNumber" [(ngModel)]="formData.roomNumber"
+                            class="form-control" placeholder="e.g., 101, A-205" [disabled]="isSubmitting" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="buildingName" class="form-label">Building Name *</label>
+                        <input type="text" id="buildingName" name="buildingName" [(ngModel)]="formData.buildingName"
+                            class="form-control" placeholder="e.g., Tower A, Block 3" [disabled]="isSubmitting"
+                            required />
+                    </div>
+                </div>
+
+                <!-- Floor and Contact Number -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="floor" class="form-label">Floor</label>
+                        <input type="text" id="floor" name="floor" [(ngModel)]="formData.floor" class="form-control"
+                            placeholder="e.g., Ground, 1st, 2nd" [disabled]="isSubmitting" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactNumber" class="form-label">Contact Number</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" [(ngModel)]="formData.contactNumber"
+                            class="form-control" placeholder="e.g., +91 98765 43210" [disabled]="isSubmitting" />
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description" class="form-label">Description *</label>
+                    <textarea id="description" name="description" [(ngModel)]="formData.description"
+                        class="form-control" placeholder="Provide detailed information about the issue" rows="4"
+                        [disabled]="isSubmitting" required></textarea>
+                </div>
+
+                <!-- Priority -->
+                <div class="form-group">
+                    <label class="form-label">Priority *</label>
+                    <div class="priority-options">
+                        <label *ngFor="let pri of priorities" class="priority-option"
+                            [class.active]="formData.priority === pri.value">
+                            <input type="radio" name="priority" [(ngModel)]="formData.priority" [value]="pri.value"
+                                [disabled]="isSubmitting" required>
+                            <span class="priority-label" [class]="'priority-' + pri.value">
+                                {{ pri.label }}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Upload Photos -->
+                <div class="form-group">
+                    <label class="form-label">Upload Photo (Optional)</label>
+                    <div class="upload-area" (click)="fileInput.click()">
+                        <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)"
+                            style="display: none;">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text" *ngIf="!selectedFile">Click to upload photo</div>
+                        <div class="upload-text" *ngIf="selectedFile">{{ selectedFile.name }}</div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+                    <span *ngIf="!isSubmitting">Submit Complaint</span>
+                    <span *ngIf="isSubmitting">Submitting...</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</main>

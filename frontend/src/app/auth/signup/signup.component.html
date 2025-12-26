@@ -1,0 +1,123 @@
+<div class="signup-container">
+    <div class="signup-card">
+        <div class="signup-header">
+            <h1>Create Account</h1>
+            <p>Register for Maintenance Tracker</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" class="signup-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName" class="form-label">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" [(ngModel)]="formData.firstName"
+                        class="form-control" placeholder="John" [disabled]="isSubmitting" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName" class="form-label">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" [(ngModel)]="formData.lastName"
+                        class="form-control" placeholder="Doe" [disabled]="isSubmitting" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email *</label>
+                <input type="email" id="email" name="email" [(ngModel)]="formData.email" class="form-control"
+                    placeholder="john.doe@example.com" [disabled]="isSubmitting" required />
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username *</label>
+                <input type="text" id="username" name="username" [(ngModel)]="formData.username" class="form-control"
+                    placeholder="johndoe" [disabled]="isSubmitting" required />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password" class="form-label">Password *</label>
+                    <input type="password" id="password" name="password" [(ngModel)]="formData.password"
+                        class="form-control" placeholder="Min. 6 characters" [disabled]="isSubmitting" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword"
+                        [(ngModel)]="formData.confirmPassword" class="form-control" placeholder="Re-enter password"
+                        [disabled]="isSubmitting" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="role" class="form-label">Role *</label>
+                <select id="role" name="role" [(ngModel)]="formData.role" class="form-control" [disabled]="isSubmitting"
+                    required>
+                    <option value="Resident">Resident</option>
+                    <option value="Technician">Maintenance Staff</option>
+                </select>
+
+                <!-- Verification Notice for Technicians -->
+                <div *ngIf="formData.role === 'Technician'" class="info-message">
+                    ℹ️ Technician accounts require admin verification before you can login.
+                </div>
+            </div>
+
+            <!-- Technician-specific fields -->
+            <div *ngIf="formData.role === 'Technician'">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="employeeId" class="form-label">Employee ID *</label>
+                        <input type="text" id="employeeId" name="employeeId" [(ngModel)]="formData.employeeId"
+                            class="form-control" placeholder="EMP12345" [disabled]="isSubmitting" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber" class="form-label">Phone Number *</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" [(ngModel)]="formData.phoneNumber"
+                            class="form-control" placeholder="555-0123" [disabled]="isSubmitting" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Profile Photo *</label>
+                    <div class="upload-area" (click)="photoInput.click()">
+                        <input #photoInput type="file" accept="image/*" (change)="onPhotoSelected($event)"
+                            style="display: none;">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text" *ngIf="!selectedPhoto">Click to upload your photo</div>
+                        <div class="upload-text" *ngIf="selectedPhoto">{{ selectedPhoto.name }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="apartmentNumber" class="form-label">
+                        Apartment Number <span *ngIf="formData.role === 'resident'">*</span>
+                    </label>
+                    <input type="text" id="apartmentNumber" name="apartmentNumber"
+                        [(ngModel)]="formData.apartmentNumber" class="form-control" placeholder="101"
+                        [disabled]="isSubmitting" />
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" [(ngModel)]="formData.phoneNumber"
+                        class="form-control" placeholder="555-0123" [disabled]="isSubmitting" />
+                </div>
+            </div>
+
+            <div *ngIf="errorMessage" class="alert alert-error">
+                {{ errorMessage }}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">Create Account</span>
+                <span *ngIf="isSubmitting">Creating Account...</span>
+            </button>
+        </form>
+
+        <div class="signup-footer">
+            <p>Already have an account? <a routerLink="/login">Sign In</a></p>
+        </div>
+    </div>
+</div>
