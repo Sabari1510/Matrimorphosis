@@ -157,4 +157,9 @@ export class TechnicianDashboardComponent implements OnInit {
             year: 'numeric'
         });
     }
+
+    /** Get work orders filtered by status for Kanban columns */
+    getOrdersByStatus(status: string): MaintenanceRequest[] {
+        return this.myWorkOrders.filter(order => order.status === status);
+    }
 }

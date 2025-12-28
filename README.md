@@ -1,40 +1,24 @@
-# 🎉 Digital Maintenance Tracker - Ready to Use!
+# Digital Maintenance Tracker
 
-## ✅ Setup Complete
+A comprehensive apartment maintenance management system designed for residents, technicians, and administrators.
 
-**Backend**: http://localhost:3000 - Running with MySQL  
-**Frontend**: http://localhost:4200 - Angular app ready
+## Features
 
----
+### Role-Based Dashboards
+- **Residents**: Submit new maintenance requests with media uploads, track history, and provide feedback.
+- **Technicians**: View assigned tasks, update work status, and document resolutions.
+- **Administrators**: Manage staff assignment, oversee all requests, and access analytics.
 
-## 🚀 Quick Start
+### Technical Architecture
+- **Frontend**: Angular 18 with a custom "Dark Elegance" design system.
+- **Backend**: Node.js & Express API.
+- **Database**:
+  - **MySQL**: Relational data (Users, Requests, Assignments).
+  - **MongoDB**: Unstructured data and media metadata.
 
-1. **Open**: http://localhost:4200
-2. **Sign Up**: Create account (Admin/Technician/Resident)
-3. **Login**: Use your credentials
-4. **Test Features**:
-   - Resident: Create maintenance requests
-   - Technician: View/update assigned tasks
-   - Admin: Assign requests, view analytics
+## Project Structure
+- `/frontend`: Angular client application.
+- `/backend`: Express server and database models.
 
----
-
-## 📊 Database
-
-- **MySQL**: maintenance_tracker database
-- **Tables**: users, requests
-- **Connection**: Verified and working
-
----
-
-## 🎯 Features Implemented
-
-✅ JWT Authentication  
-✅ Role-Based Access Control  
-✅ Maintenance Request CRUD  
-✅ Status Tracking (New → Assigned → In-Progress → Resolved)  
-✅ Technician Assignment  
-✅ Dashboard Analytics  
-✅ Responsive UI
-
-**Enjoy your application!** 🎊
+## Deployment & Setup
+Refer to the README files in the respective directories for specific setup instructions.

@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import { User } from '../models/user.model';
 import { Request } from '../models/request.model';
+import { Comment } from '../models/comment.model';
 
 dotenv.config();
 
@@ -12,9 +13,9 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || 'password',
     database: process.env.DB_NAME || 'maintenance_tracker',
-    synchronize: false, // Disabled - using manual schema from schema.sql
+    synchronize: true, // Temporarily enabled to create new columns
     logging: false,
-    entities: [User, Request],
+    entities: [User, Request, Comment],
     subscribers: [],
     migrations: [],
 });

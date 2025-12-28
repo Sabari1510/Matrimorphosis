@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 export enum UserRole {
     RESIDENT = 'Resident',
@@ -7,6 +7,9 @@ export enum UserRole {
 }
 
 @Entity('users')
+@Index('idx_user_role', ['role'])
+@Index('idx_user_verified', ['verified'])
+@Index('idx_user_specialization', ['specialization'])
 export class User {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -21,8 +24,8 @@ export class User {
     })
     role!: UserRole;
 
-    @Column()
-    contact_info!: string;
+    @Column({ unique: true })
+    contact_info!: string; // Email - made unique for faster lookups
 
     @Column({ nullable: true })
     password!: string; // Added for authentication
@@ -44,4 +47,14 @@ export class User {
 
     @CreateDateColumn()
     created_at!: Date;
+
+    @UpdateDateColumn()
+    updated_at!: Date;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    password_reset_token?: string | null;
+
+    @Column({ type: 'datetime', nullable: true })
+    password_reset_expires?: Date | null;
 }
+

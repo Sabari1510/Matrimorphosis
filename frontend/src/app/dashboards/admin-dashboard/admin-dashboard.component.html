@@ -2,124 +2,123 @@
 
 <div class="admin-dashboard">
     <div class="dashboard-container">
-        <!-- Header Section -->
-        <div class="dashboard-header">
+
+        <!-- ============================
+             HEADER SECTION
+             ============================ -->
+        <header class="dashboard-header">
             <div class="header-content">
-                <div class="welcome-section">
-                    <h1>Welcome, <span class="accent">{{ userName }}!</span></h1>
-                    <p>Manage all maintenance requests and staff</p>
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-secondary" routerLink="/admin/manage-requests">View Requests</button>
-                    <button class="btn btn-primary" routerLink="/admin/manage-staff">View Staffs</button>
-                </div>
+                <h1 class="page-title">Welcome, <span class="accent">{{ userName }}!</span></h1>
+                <p class="page-subtitle">Manage all maintenance requests and staff</p>
             </div>
-        </div>
+            <div class="header-actions">
+                <a routerLink="/admin/manage-requests" class="btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="1" />
+                    </svg>
+                    <span>View Requests</span>
+                </a>
+                <a routerLink="/admin/manage-staff" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                    </svg>
+                    <span>Manage Staff</span>
+                </a>
+            </div>
+        </header>
 
-        <!-- Metrics Grid -->
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon total">📊</div>
+        <!-- ============================
+             STATS OVERVIEW CARDS
+             ============================ -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="1" />
+                        <path d="M9 12h6M9 16h6" />
+                    </svg>
                 </div>
-                <div class="metric-value">{{ stats.totalRequests }}</div>
-                <div class="metric-label">Total Requests</div>
-                <div class="metric-change positive">
-                    <span>↑ 12%</span>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.totalRequests }}</span>
+                    <span class="stat-label">Total Requests</span>
                 </div>
+                <div class="stat-change positive">+12%</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon pending">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.pendingRequests }}</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+                <div class="stat-change negative">-8%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon progress">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ allRequests.length - stats.pendingRequests - stats.resolvedRequests
+                        }}</span>
+                    <span class="stat-label">In Progress</span>
+                </div>
+                <div class="stat-change positive">+5%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon completed">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.resolvedRequests }}</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-change positive">+15%</div>
+            </div>
+        </section>
 
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon pending">⏳</div>
+        <!-- ============================
+             PENDING TECHNICIANS ALERT
+             ============================ -->
+        <section class="alert-section" *ngIf="pendingTechnicians.length > 0">
+            <div class="alert-card warning">
+                <div class="alert-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
                 </div>
-                <div class="metric-value">{{ stats.pendingRequests }}</div>
-                <div class="metric-label">Pending</div>
-                <div class="metric-change negative">
-                    <span>↓ 8%</span>
+                <div class="alert-content">
+                    <h3>{{ pendingTechnicians.length }} Pending Technician Approvals</h3>
+                    <p>Review and approve new technician registrations</p>
                 </div>
+                <a routerLink="/admin/manage-staff" class="alert-action">Review Now</a>
             </div>
+        </section>
 
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon progress">🔧</div>
-                </div>
-                <div class="metric-value">{{ allRequests.length - stats.pendingRequests - stats.resolvedRequests
-                    }}</div>
-                <div class="metric-label">In Progress</div>
-                <div class="metric-change positive">
-                    <span>↑ 5%</span>
-                </div>
-            </div>
+        <!-- (Analytics Section removed and moved to separate Stats page) -->
 
-            <div class="metric-card">
-                <div class="metric-header">
-                    <div class="metric-icon completed">✅</div>
-                </div>
-                <div class="metric-value">{{ stats.resolvedRequests }}</div>
-                <div class="metric-label">Completed</div>
-                <div class="metric-change positive">
-                    <span>↑ 15%</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Technicians Section -->
-        <div class="section-card" *ngIf="pendingTechnicians.length > 0">
-            <div class="section-header">
-                <h2 class="section-title">Pending Technician Approvals</h2>
-                <span class="badge">{{ pendingTechnicians.length }}</span>
-            </div>
-            <div class="pending-technicians-grid">
-                <div class="technician-card" *ngFor="let tech of pendingTechnicians">
-                    <div class="tech-info">
-                        <div class="tech-avatar">
-                            <img *ngIf="tech.photo" [src]="getMediaUrl(tech.photo)" alt="{{tech.name}}">
-                            <div *ngIf="!tech.photo" class="avatar-placeholder">{{ tech.name.charAt(0) }}</div>
-                        </div>
-                        <div class="tech-details">
-                            <h3>{{ tech.name }}</h3>
-                            <p class="tech-specialization">{{ tech.specialization | titlecase }}</p>
-                            <p class="tech-contact">{{ tech.contact_info }}</p>
-                            <p class="tech-employee-id">Employee ID: {{ tech.employee_id }}</p>
-                        </div>
-                    </div>
-                    <div class="tech-actions">
-                        <button class="btn btn-primary" [routerLink]="['/admin/technician-detail', tech.id]">
-                            👁️ View Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="charts-section">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3 class="chart-title">Request Trends</h3>
-                    <div class="chart-filter">
-                        <button class="filter-btn active">Week</button>
-                        <button class="filter-btn">Month</button>
-                        <button class="filter-btn">Year</button>
-                    </div>
-                </div>
-                <canvas id="requestsChart"></canvas>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3 class="chart-title">Status Distribution</h3>
-                </div>
-                <canvas id="statusChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Recent Requests Table -->
-        <div class="table-section" id="requests-table">
+        <!-- ============================
+             RECENT REQUESTS TABLE
+             ============================ -->
+        <section class="table-section">
             <div class="section-header">
                 <h3 class="section-title">Recent Requests</h3>
-                <button class="btn btn-secondary">View All</button>
+                <a routerLink="/admin/manage-requests" class="view-all-link">View All →</a>
             </div>
 
             <div class="table-container">
@@ -138,8 +137,8 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let request of recentRequests">
-                            <td>#{{ request.id }}</td>
-                            <td>{{ request.title }}</td>
+                            <td class="id-cell">#{{ request.id }}</td>
+                            <td class="title-cell">{{ request.title }}</td>
                             <td>{{ request.residentName || request.resident?.name }}</td>
                             <td>{{ request.technicianName || request.technician?.name || 'Unassigned' }}</td>
                             <td>
@@ -152,27 +151,49 @@
                                     {{ request.status }}
                                 </span>
                             </td>
-                            <td>{{ request.created_at | date:'short' }}</td>
+                            <td class="date-cell">{{ request.created_at | date:'short' }}</td>
                             <td>
                                 <div class="action-btns">
-                                    <button class="btn-icon" (click)="viewRequestDetails(request)"
-                                        title="View">👁️</button>
-                                    <button class="btn-icon" (click)="openAssignModal(request)"
-                                        *ngIf="request.status !== 'Resolved'" title="Assign">👤</button>
-                                    <button class="btn-icon" (click)="deleteRequest($event, request.id)"
-                                        title="Delete">🗑️</button>
+                                    <button class="btn-icon view" (click)="viewRequestDetails(request)" title="View">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </button>
+                                    <button class="btn-icon assign" (click)="openAssignModal(request)"
+                                        *ngIf="request.status !== 'Resolved'" title="Assign">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                            <circle cx="8.5" cy="7" r="4" />
+                                            <line x1="20" y1="8" x2="20" y2="14" />
+                                            <line x1="23" y1="11" x2="17" y2="11" />
+                                        </svg>
+                                    </button>
+                                    <button class="btn-icon delete" (click)="deleteRequest($event, request.id)"
+                                        title="Delete">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6" />
+                                            <path
+                                                d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
 
-        <!-- Staff Overview Section -->
-        <div class="table-section staff-section" id="staff-table" style="margin-top: 30px;">
+        <!-- ============================
+             STAFF PERFORMANCE TABLE
+             ============================ -->
+        <section class="table-section staff-section">
             <div class="section-header">
-                <h3 class="section-title">Staff Overview & Performance</h3>
+                <h3 class="section-title">Staff Performance</h3>
                 <span class="badge">{{ staffPerformance.length }} Total Staff</span>
             </div>
 
@@ -209,8 +230,13 @@
                             <td>{{ staff.assigned }}</td>
                             <td>{{ staff.completed }}</td>
                             <td>
-                                <div class="star-rating-sm" *ngIf="staff.avgRating && staff.avgRating > 0">
-                                    <span class="star">★</span> {{ staff.avgRating | number:'1.1-1' }}
+                                <div class="star-rating" *ngIf="staff.avgRating && staff.avgRating > 0">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+                                        stroke="currentColor">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    {{ staff.avgRating | number:'1.1-1' }}
                                 </div>
                                 <span class="no-data" *ngIf="!staff.avgRating || staff.avgRating === 0">No
                                     ratings</span>
@@ -226,13 +252,20 @@
                             </td>
                             <td>
                                 <button class="btn-icon delete" (click)="handleDeleteStaff(staff.id)"
-                                    title="Delete Staff">🗑️</button>
+                                    title="Delete Staff">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6" />
+                                        <path
+                                            d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     </div>
 
     <!-- Assignment Modal -->

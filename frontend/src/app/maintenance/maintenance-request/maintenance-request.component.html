@@ -110,12 +110,13 @@
                 <div class="form-group">
                     <label class="form-label">Upload Photo (Optional)</label>
                     <div class="upload-area" (click)="fileInput.click()">
-                        <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)"
-                            style="display: none;">
+                        <input #fileInput type="file" accept=".jpg,.jpeg,.png,.gif,.webp"
+                            (change)="onFileSelected($event)" style="display: none;">
                         <div class="upload-icon">📷</div>
                         <div class="upload-text" *ngIf="!selectedFile">Click to upload photo</div>
                         <div class="upload-text" *ngIf="selectedFile">{{ selectedFile.name }}</div>
                     </div>
+                    <small class="form-hint">Allowed formats: JPG, PNG, GIF, WebP (Max 5MB)</small>
                 </div>
 
                 <!-- Submit Button -->

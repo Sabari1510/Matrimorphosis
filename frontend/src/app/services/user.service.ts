@@ -10,12 +10,28 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
+    /** Get verified technicians (for assignment) */
     getTechnicians(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/technicians`);
     }
 
+    /** Get ALL technicians including pending (for manage staff) */
+    getAllTechnicians(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/technicians/all`);
+    }
+
+    /** Get pending technicians waiting for admin approval */
+    getPendingTechnicians(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/technicians/pending`);
+    }
+
+    /** Verify (approve) a technician */
+    verifyTechnician(id: number): Observable<any> {
+        return this.http.put(`${this.apiUrl}/technicians/${id}/verify`, {});
+    }
+
     getTechniciansBySpecialization(specialization: string): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/technicians/${specialization}`);
+        return this.http.get<any[]>(`${this.apiUrl}/technicians/specialization/${specialization}`);
     }
 
     getAllUsers(): Observable<any[]> {

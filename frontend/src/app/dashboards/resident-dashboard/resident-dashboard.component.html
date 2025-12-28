@@ -2,111 +2,216 @@
 
 <div class="resident-dashboard">
     <div class="dashboard-container">
-        <!-- Header Section -->
-        <div class="dashboard-header">
-            <div class="welcome-section">
-                <h1>Welcome Back, <span class="accent">{{ userName }}</span></h1>
-                <p>Manage your maintenance requests</p>
-            </div>
-        </div>
 
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <div class="action-card" (click)="openNewRequestModal()">
-                <div class="action-icon new-request">➕</div>
-                <h3 class="action-title">New Request</h3>
-                <p class="action-description">Submit a maintenance request</p>
+        <!-- ============================
+             HEADER SECTION
+             ============================ -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="page-title">Welcome Back, <span class="accent">{{ userName }}</span></h1>
+                <p class="page-subtitle">Manage your apartment maintenance requests</p>
             </div>
+            <a routerLink="/maintenance/new" class="btn-new-request">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>New Request</span>
+            </a>
+        </header>
 
-            <div class="action-card" (click)="trackRequests()">
-                <div class="action-icon track">📍</div>
-                <h3 class="action-title">Track Requests</h3>
-                <p class="action-description">View request status</p>
+        <!-- ============================
+             STATS OVERVIEW CARDS
+             ============================ -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="1" />
+                        <path d="M9 12h6M9 16h6" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.total }}</span>
+                    <span class="stat-label">Total Requests</span>
+                </div>
             </div>
-
-            <div class="action-card" (click)="viewHistory()">
-                <div class="action-icon history">📜</div>
-                <h3 class="action-title">History</h3>
-                <p class="action-description">View past requests</p>
+            <div class="stat-card">
+                <div class="stat-icon pending">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.pending }}</span>
+                    <span class="stat-label">Pending</span>
+                </div>
             </div>
-
-            <div class="action-card" (click)="contactSupport()">
-                <div class="action-icon contact">📞</div>
-                <h3 class="action-title">Contact</h3>
-                <p class="action-description">Get help</p>
+            <div class="stat-card">
+                <div class="stat-icon progress">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.inProgress }}</span>
+                    <span class="stat-label">In Progress</span>
+                </div>
             </div>
-        </div>
+            <div class="stat-card">
+                <div class="stat-icon completed">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.completed }}</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+            </div>
+        </section>
 
-        <!-- Overview Section -->
-        <div class="overview-section">
+        <!-- ============================
+             MAIN CONTENT AREA
+             ============================ -->
+        <div class="main-content">
             <!-- Recent Requests -->
-            <div class="requests-section">
-                <div class="section-header">
-                    <h2 class="section-title">Recent Requests</h2>
+            <section class="requests-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Recent Requests</h2>
                     <a routerLink="/maintenance/history" class="view-all-link">View All →</a>
                 </div>
 
-                <div class="request-card" *ngFor="let request of requests.slice(0, 5)" [ngClass]="request.priority"
-                    (click)="viewRequestDetails(request)">
-                    <div class="request-header">
-                        <span class="request-id">#{{ request.id }}</span>
-                        <span class="request-status" [ngClass]="request.status">{{ request.status }}</span>
+                <div class="requests-list" *ngIf="requests.length > 0">
+                    <div class="request-card" *ngFor="let request of requests.slice(0, 5)"
+                        (click)="viewRequestDetails(request)">
+                        <div class="request-left">
+                            <span class="request-category">{{ request.category || 'General' }}</span>
+                            <h4 class="request-title">{{ request.title }}</h4>
+                            <p class="request-meta">
+                                <span class="request-id">#{{ request.id }}</span>
+                                <span class="meta-divider">•</span>
+                                <span class="request-date">{{ request.created_at | date:'MMM d, y' }}</span>
+                            </p>
+                        </div>
+                        <div class="request-right">
+                            <span class="request-status" [ngClass]="request.status">{{ request.status }}</span>
+                            <span class="request-priority" [ngClass]="request.priority">{{ request.priority }}</span>
+                        </div>
                     </div>
-                    <h4 class="request-title">{{ request.title }}</h4>
-                    <p class="request-date">{{ request.created_at | date:'medium' }}</p>
                 </div>
-
-                <!-- Request Detail Modal -->
-                <app-request-modal *ngIf="selectedRequest" [request]="selectedRequest" [userRole]="'Resident'"
-                    [userId]="userId" (close)="closeRequestModal()" (updated)="loadRequests()">
-                </app-request-modal>
 
                 <!-- Empty State -->
                 <div class="empty-state" *ngIf="requests.length === 0">
-                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M22 7l-10 7L2 7" />
+                        </svg>
+                    </div>
                     <h3>No Requests Yet</h3>
                     <p>You haven't submitted any maintenance requests.</p>
+                    <a routerLink="/maintenance/new" class="btn-empty-action">Create Your First Request</a>
                 </div>
-            </div>
+            </section>
 
-            <!-- Stats Sidebar -->
-            <div class="stats-sidebar">
-                <div class="stats-card">
-                    <h3 class="section-title">Overview</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">Total Requests</span>
-                        <span class="stat-value">{{ stats.total }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Pending</span>
-                        <span class="stat-value highlight">{{ stats.pending }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">In Progress</span>
-                        <span class="stat-value">{{ stats.inProgress }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Completed</span>
-                        <span class="stat-value">{{ stats.completed }}</span>
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Quick Actions -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">Quick Actions</h3>
+                    <div class="quick-action-buttons">
+                        <a routerLink="/maintenance/new" class="quick-btn primary">
+                            <svg class="quick-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14" />
+                            </svg>
+                            <span>Submit Request</span>
+                        </a>
+                        <a routerLink="/maintenance/history" class="quick-btn">
+                            <svg class="quick-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 8v4l3 3" />
+                                <circle cx="12" cy="12" r="10" />
+                            </svg>
+                            <span>View History</span>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Contact Card -->
-                <div class="contact-card">
-                    <h3>Need Help?</h3>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <span>📞</span>
-                            <span>+1 (555) 123-4567</span>
-                        </div>
-                        <div class="contact-item">
-                            <span>📧</span>
-                            <span>support&#64;maintenance.com</span>
-                        </div>
-                    </div>
-                    <button class="contact-btn" (click)="contactSupport()">Contact Support</button>
+                <!-- Helpful Tips -->
+                <div class="sidebar-card tips-card">
+                    <h3 class="sidebar-title">Maintenance Tips</h3>
+                    <ul class="tips-list">
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Include clear photos of the issue</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Set accurate priority levels</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Provide detailed descriptions</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Check your unit access time</span>
+                        </li>
+                    </ul>
                 </div>
-            </div>
+            </aside>
         </div>
+
+        <!-- Request Detail Modal -->
+        <app-request-modal *ngIf="selectedRequest" [request]="selectedRequest" [userRole]="'Resident'" [userId]="userId"
+            (close)="closeRequestModal()" (updated)="loadRequests()">
+        </app-request-modal>
+
+        <!-- ============================
+             FOOTER WITH CONTACT INFO
+             ============================ -->
+        <footer class="dashboard-footer">
+            <div class="footer-content">
+                <span class="footer-text">Need Help?</span>
+                <div class="footer-contacts">
+                    <a href="tel:+15551234567" class="footer-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                        </svg>
+                        +1 (555) 123-4567
+                    </a>
+                    <span class="footer-divider">|</span>
+                    <a href="mailto:support@maintenance.com" class="footer-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M22 7l-10 7L2 7" />
+                        </svg>
+                        support&#64;maintenance.com
+                    </a>
+                </div>
+            </div>
+        </footer>
+
     </div>
 </div>

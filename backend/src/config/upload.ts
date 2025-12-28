@@ -7,15 +7,17 @@ const storage = multer.memoryStorage();
 
 
 // File filter - only images
+// File filter - allow images and videos
 const fileFilter = (req: any, file: any, cb: any) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
+    const allowedTypes = /jpeg|jpg|png|gif|webp|mp4|webm|mpeg/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
 
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb(new Error('Only image files are allowed!'));
+        console.warn(`Upload rejected: Invalid file type. Ext: ${path.extname(file.originalname)}, Mime: ${file.mimetype}`);
+        cb(new Error('Only image and video files are allowed! (jpeg, jpg, png, gif, webp, mp4, webm)'));
     }
 };
 

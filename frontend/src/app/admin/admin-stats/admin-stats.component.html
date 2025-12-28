@@ -1,0 +1,179 @@
+<app-navbar></app-navbar>
+
+<div class="admin-dashboard stats-dashboard">
+    <div class="dashboard-container">
+        <!-- ============================
+             HEADER SECTION
+             ============================ -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="page-title">Analytics <span class="accent">& Statistics</span></h1>
+                <p class="page-subtitle">Detailed insights into system performance and maintenance trends</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-refresh" (click)="loadAnalytics()" [disabled]="loading">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" [class.spinning]="loading">
+                        <path
+                            d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+                    </svg>
+                    <span>Refresh Stats</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ============================
+             STATS OVERVIEW CARDS
+             ============================ -->
+        <section class="stats-grid" *ngIf="analyticsData">
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="1" />
+                        <path d="M9 12h6M9 16h6" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ analyticsData.overview.totalRequests }}</span>
+                    <span class="stat-label">Total Requests</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon pending">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ analyticsData.overview.pendingRequests }}</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon completed">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ analyticsData.overview.resolvedRequests }}</span>
+                    <span class="stat-label">Resolved</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon progress"> <!-- Reusing progress icon for rating -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ analyticsData.overview.averageRating }}</span>
+                    <span class="stat-label">Avg Rating</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================
+             ANALYTICS SEGMENTED GRID
+             ============================ -->
+        <section class="admin-analytics-segment">
+            <div class="chart-card large">
+                <div class="chart-header">
+                    <h3 class="chart-title">Request Trends</h3>
+                    <p class="chart-subtitle">Daily Volume</p>
+                </div>
+                <div class="chart-container-inner">
+                    <canvas #trendChart></canvas>
+                </div>
+            </div>
+
+            <div class="chart-segment-side">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Status Distribution</h3>
+                    </div>
+                    <div class="chart-container-inner doughnut">
+                        <canvas #statusChart></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Requests by Category</h3>
+                    </div>
+                    <div class="chart-container-inner">
+                        <canvas #categoryChart></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================
+             STAFF PERFORMANCE TABLE
+             ============================ -->
+        <section class="table-section" *ngIf="technicianStats.length > 0">
+            <div class="section-header">
+                <h3 class="section-title">Technician Performance</h3>
+                <span class="badge">{{ technicianStats.length }} Active Techs</span>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Technician</th>
+                            <th>Assigned</th>
+                            <th>Resolved</th>
+                            <th>Success Rate</th>
+                            <th>Avg Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let tech of technicianStats">
+                            <td>
+                                <div class="tech-info-cell">
+                                    <div class="tech-initials">{{ tech.name[0] }}</div>
+                                    <div class="tech-meta">
+                                        <div class="tech-name">{{ tech.name }}</div>
+                                        <div class="tech-role">Technician</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ tech.assigned }}</td>
+                            <td>{{ tech.resolved }}</td>
+                            <td>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar"
+                                        [style.width.%]="(tech.resolved / tech.assigned) * 100 || 0"></div>
+                                    <div class="progress-label">{{ (tech.resolved / tech.assigned) * 100 || 0 |
+                                        number:'1.0-0' }}%</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="star-rating" *ngIf="tech.avgRating && tech.avgRating !== 'N/A'">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+                                        stroke="currentColor">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                        </polygon>
+                                    </svg>
+                                    {{ tech.avgRating }}
+                                </div>
+                                <span class="no-data" *ngIf="!tech.avgRating || tech.avgRating === 'N/A'">No
+                                    ratings</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>

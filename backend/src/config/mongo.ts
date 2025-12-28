@@ -3,15 +3,16 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/maintenance_logs';
+
 const connectMongo = async () => {
-  try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/maintenance_tracker';
-    await mongoose.connect(mongoUri);
-    console.log('MongoDB Connected Successfully');
-  } catch (error) {
-    console.error('MongoDB Connection Error:', error);
-    process.exit(1);
-  }
+    try {
+        await mongoose.connect(MONGO_URI);
+        console.log('✅ MongoDB Connected Successfully');
+    } catch (error) {
+        console.error('❌ MongoDB Connection Error:', error);
+        // Don't exit process, allow MySQL to still work
+    }
 };
 
 export default connectMongo;

@@ -25,4 +25,13 @@ export class AdminService {
     deleteStaff(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/staff/${id}`);
     }
+
+    getAnalytics(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/analytics`);
+    }
+
+    getTechnicianStats(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/technician-stats`);
+    }
 }
+

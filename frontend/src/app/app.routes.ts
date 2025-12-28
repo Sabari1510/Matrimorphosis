@@ -10,6 +10,7 @@ import { RequestHistoryComponent } from './maintenance/request-history/request-h
 import { TechnicianDetailComponent } from './admin/technician-detail/technician-detail.component';
 import { ManageRequestsComponent } from './admin/manage-requests/manage-requests.component';
 import { ManageStaffComponent } from './admin/manage-staff/manage-staff.component';
+import { AdminStatsComponent } from './admin/admin-stats/admin-stats.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -65,7 +66,12 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Admin'] }
     },
-
+    {
+        path: 'admin/stats',
+        component: AdminStatsComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Admin'] }
+    },
     // Additional route - Resident dashboard
     {
         path: 'resident-dashboard',

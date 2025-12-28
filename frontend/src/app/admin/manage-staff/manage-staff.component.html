@@ -29,7 +29,65 @@
             </div>
         </div>
 
-        <div class="table-card">
+        <!-- Pending Technicians Section -->
+        <div class="pending-section" *ngIf="pendingTechnicians.length > 0 && !isLoading">
+            <h2 class="section-title">
+                <span class="pending-badge">{{ pendingTechnicians.length }}</span>
+                Pending Review
+            </h2>
+            <div class="pending-cards">
+                <div class="pending-card" *ngFor="let tech of pendingTechnicians">
+                    <div class="pending-header">
+                        <div class="pending-avatar">
+                            <img *ngIf="tech.photo" [src]="getMediaUrl(tech.photo)" [alt]="tech.name"
+                                class="pending-photo">
+                            <div *ngIf="!tech.photo" class="pending-initials">{{ getInitials(tech.name) }}</div>
+                        </div>
+                        <div class="pending-info">
+                            <h4>{{ tech.name }}</h4>
+                            <p>{{ tech.contact_info }}</p>
+                        </div>
+                    </div>
+                    <div class="pending-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Employee ID:</span>
+                            <span class="detail-value">{{ tech.employee_id || 'Not provided' }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Specialization:</span>
+                            <span class="detail-value specialization">{{ tech.specialization | titlecase }}</span>
+                        </div>
+                        <div class="detail-row" *ngIf="tech.phone">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">{{ tech.phone }}</span>
+                        </div>
+                    </div>
+                    <div class="pending-actions">
+                        <button class="btn btn-approve" (click)="approveTechnician(tech.id)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Approve
+                        </button>
+                        <button class="btn btn-reject" (click)="rejectTechnician(tech.id)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                            Reject
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading-container" *ngIf="isLoading">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Loading staff data...</p>
+        </div>
+
+        <div class="table-card" *ngIf="!isLoading">
             <div class="table-container">
                 <table>
                     <thead>
@@ -79,10 +137,21 @@
                             </td>
                             <td>
                                 <div class="action-btns">
-                                    <button class="btn-icon" [routerLink]="['/admin/technician-detail', staff.id]"
-                                        title="View Details">👁️</button>
+                                    <button class="btn-icon view" [routerLink]="['/admin/technician-detail', staff.id]"
+                                        title="View Details">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </button>
                                     <button class="btn-icon delete" (click)="deleteStaff(staff.id)"
-                                        title="Delete Staff">🗑️</button>
+                                        title="Delete Staff">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M18 6L6 18M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>

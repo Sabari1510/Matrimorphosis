@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Maintenance Request Controller
+ * Handles CRUD operations for maintenance requests including creation,
+ * retrieval, status updates, technician assignment, and feedback.
+ * 
+ * @module controllers/request
+ * @requires express
+ * @requires typeorm
+ */
+
 import { Request, Response } from 'express';
 import { AppDataSource } from '../config/database';
 import { Request as MaintenanceRequest, RequestStatus } from '../models/request.model';
@@ -6,9 +16,25 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import Media from '../models/media.schema';
 import Log from '../models/log.schema';
 
+/** Repository instance for maintenance request operations */
 const requestRepository = AppDataSource.getRepository(MaintenanceRequest);
 
-// Create a new request
+/**
+ * Creates a new maintenance request
+ * 
+ * @async
+ * @function createRequest
+ * @param {AuthRequest} req - Authenticated request object
+ * @param {string} req.body.category - Request category (plumbing, electrical, etc.)
+ * @param {string} req.body.title - Request title/summary
+ * @param {string} req.body.description - Detailed description of the issue
+ * @param {string} req.body.priority - Priority level (low, medium, high, urgent)
+ * @param {string} [req.body.location] - Location of the issue
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Created request object
+ * 
+ * @throws {500} If error occurs during creation
+ */
 export const createRequest = async (req: AuthRequest, res: Response) => {
   try {
     const { category, title, description, priority, location } = req.body;
@@ -55,7 +81,21 @@ export const createRequest = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Get requests (Role based)
+/**
+ * Retrieves maintenance requests based on user role
+ * - Residents: See their own requests (including admin-deleted for status visibility)
+ * - Technicians: See requests assigned to them
+ * - Admins: See all non-deleted requests
+ * 
+ * @async
+ * @function getRequests
+ * @param {AuthRequest} req - Authenticated request object
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Array of maintenance requests
+ * 
+ * @throws {403} If user role is unauthorized
+ * @throws {500} If error occurs during retrieval
+ */
 export const getRequests = async (req: AuthRequest, res: Response) => {
   try {
     const { userId, role } = req.user;
@@ -96,7 +136,22 @@ export const getRequests = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Update Status (Technician/Admin)
+/**
+ * Updates the status of a maintenance request
+ * 
+ * @async
+ * @function updateStatus
+ * @param {AuthRequest} req - Authenticated request object
+ * @param {string} req.params.id - Request ID
+ * @param {string} req.body.status - New status value
+ * @param {string} [req.body.notes] - Optional notes about the update
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Updated request object
+ * 
+ * @throws {400} If request ID is missing
+ * @throws {404} If request not found
+ * @throws {500} If error occurs during update
+ */
 export const updateStatus = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -126,7 +181,21 @@ export const updateStatus = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Assign Technician (Admin)
+/**
+ * Assigns a technician to a maintenance request (Admin only)
+ * 
+ * @async
+ * @function assignTechnician
+ * @param {AuthRequest} req - Authenticated request object (must be Admin)
+ * @param {string} req.params.id - Request ID
+ * @param {number} req.body.technicianId - Technician user ID to assign
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Updated request with assigned technician
+ * 
+ * @throws {400} If request ID is missing
+ * @throws {404} If request not found
+ * @throws {500} If error occurs during assignment
+ */
 export const assignTechnician = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -141,6 +210,7 @@ export const assignTechnician = async (req: AuthRequest, res: Response) => {
 
     request.technician_id = technicianId;
     request.status = RequestStatus.ASSIGNED;
+    request.assigned_at = new Date(); // Track when assigned for delay calculation
     await requestRepository.save(request);
 
     await Log.create({
@@ -155,7 +225,23 @@ export const assignTechnician = async (req: AuthRequest, res: Response) => {
   }
 }
 
-// Resolve Request with Proof (Technician)
+/**
+ * Marks a request as resolved with optional completion proof
+ * 
+ * @async
+ * @function resolveRequest
+ * @param {AuthRequest} req - Authenticated request (Technician or Admin)
+ * @param {string} req.params.id - Request ID
+ * @param {string} [req.body.notes] - Resolution notes
+ * @param {File} [req.file] - Completion proof image
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Resolved request object
+ * 
+ * @throws {400} If request ID is missing
+ * @throws {403} If user is not assigned technician or admin
+ * @throws {404} If request not found
+ * @throws {500} If error occurs
+ */
 export const resolveRequest = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -183,26 +269,64 @@ export const resolveRequest = async (req: AuthRequest, res: Response) => {
       completionMediaId = savedMedia._id.toString();
     }
 
+    // Calculate delay penalty (if resolved late)
+    let delayPenalty = 0;
+    let delayDays = 0;
+    if (request.assigned_at) {
+      const assignedDate = new Date(request.assigned_at);
+      const now = new Date();
+      const hoursDiff = (now.getTime() - assignedDate.getTime()) / (1000 * 60 * 60);
+      delayDays = Math.floor(hoursDiff / 24);
+
+      if (hoursDiff > 72) {
+        delayPenalty = 2; // Major delay: -2 from rating
+      } else if (hoursDiff > 48) {
+        delayPenalty = 1; // Moderate delay: -1 from rating
+      }
+    }
+
     request.status = RequestStatus.RESOLVED;
     request.completion_media = completionMediaId;
     await requestRepository.save(request);
 
-    // Log the resolution
+    // Log the resolution with delay info
     Log.create({
       level: 'INFO',
       message: `Request ${id} marked as RESOLVED by Technician ${req.user.userId}`,
-      meta: { notes, hasProof: !!completionMediaId }
+      meta: { notes, hasProof: !!completionMediaId, delayDays, delayPenalty }
     }).catch(err => console.log('Log failed:', err.message));
 
 
-    res.json({ message: 'Task resolved successfully', request });
+    res.json({
+      message: 'Task resolved successfully',
+      request,
+      delayPenalty,
+      delayDays,
+      note: delayPenalty > 0 ? `Late resolution: -${delayPenalty} rating penalty applied` : null
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
-// Submit Feedback (Resident)
+/**
+ * Submits feedback for a resolved request (Resident only)
+ * 
+ * @async
+ * @function submitFeedback
+ * @param {AuthRequest} req - Authenticated request (must be request owner)
+ * @param {string} req.params.id - Request ID
+ * @param {number} req.body.feedback_rating - Rating (1-5)
+ * @param {string} [req.body.feedback_comments] - Optional comments
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Updated request with feedback
+ * 
+ * @throws {400} If request ID or rating is missing
+ * @throws {403} If user is not the request owner
+ * @throws {404} If request not found
+ * @throws {500} If error occurs
+ */
 export const submitFeedback = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -237,7 +361,21 @@ export const submitFeedback = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Delete Request (Resident/Admin)
+/**
+ * Soft-deletes a maintenance request
+ * 
+ * @async
+ * @function deleteRequest
+ * @param {AuthRequest} req - Authenticated request (Resident owner or Admin)
+ * @param {string} req.params.id - Request ID
+ * @param {Response} res - Express response object
+ * @returns {Promise<Response>} Success message
+ * 
+ * @throws {400} If request ID missing or trying to delete resolved request
+ * @throws {403} If user doesn't own the request and is not admin
+ * @throws {404} If request not found
+ * @throws {500} If error occurs
+ */
 export const deleteRequest = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -256,7 +394,7 @@ export const deleteRequest = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: 'Cannot delete a resolved request' });
     }
 
-    // await requestRepository.remove(request); // Hard delete removed
+    // Soft delete
     request.is_deleted = true;
     request.deleted_by_role = req.user.role;
     await requestRepository.save(request);
@@ -274,6 +412,3 @@ export const deleteRequest = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-
-

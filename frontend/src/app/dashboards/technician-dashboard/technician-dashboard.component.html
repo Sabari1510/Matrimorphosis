@@ -2,97 +2,160 @@
 
 <div class="technician-dashboard">
     <div class="dashboard-container">
-        <!-- Header Section -->
-        <div class="dashboard-header">
-            <div class="header-content">
-                <div class="welcome-section">
-                    <h1>Welcome, <span class="accent">{{ userName }}!</span></h1>
-                    <div class="subtitle-row">
-                        <p>Manage your assigned work orders</p>
-                        <span class="specialization-badge" *ngIf="specialization">
-                            {{ specialization | titlecase }} Specialist
-                        </span>
+
+        <!-- ============================
+             HEADER SECTION
+             ============================ -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1 class="page-title">Welcome, <span class="accent">{{ userName }}!</span></h1>
+                <p class="page-subtitle">
+                    Manage your assigned work orders
+                    <span class="specialization-badge" *ngIf="specialization">
+                        {{ specialization | titlecase }} Specialist
+                    </span>
+                </p>
+            </div>
+            <div class="header-stats">
+                <div class="mini-stat">
+                    <span class="mini-stat-value">{{ stats.myTasks }}</span>
+                    <span class="mini-stat-label">Total</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-value">{{ stats.pending }}</span>
+                    <span class="mini-stat-label">Assigned</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-value">{{ stats.inProgress }}</span>
+                    <span class="mini-stat-label">In Progress</span>
+                </div>
+                <div class="mini-stat completed">
+                    <span class="mini-stat-value">{{ stats.completedToday }}</span>
+                    <span class="mini-stat-label">Completed</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ============================
+             KANBAN BOARD
+             ============================ -->
+        <section class="kanban-board">
+            <!-- ASSIGNED Column -->
+            <div class="kanban-column">
+                <div class="column-header assigned">
+                    <div class="column-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                        </svg>
+                    </div>
+                    <h3>Assigned</h3>
+                    <span class="column-count">{{ getOrdersByStatus('Assigned').length }}</span>
+                </div>
+                <div class="column-body">
+                    <div class="kanban-card" *ngFor="let order of getOrdersByStatus('Assigned')"
+                        [ngClass]="'priority-' + order.priority" (click)="viewWorkOrder(order)">
+                        <div class="card-top">
+                            <span class="card-id">#{{ order.id }}</span>
+                            <span class="card-priority" [ngClass]="order.priority">{{ order.priority }}</span>
+                        </div>
+                        <h4 class="card-title">{{ order.title }}</h4>
+                        <p class="card-description">{{ order.description }}</p>
+                        <div class="card-meta">
+                            <span class="card-category">{{ getCategoryLabel(order.category) }}</span>
+                            <span class="card-date">{{ formatDate(order.created_at) }}</span>
+                        </div>
+                        <button class="card-action-btn" (click)="startWork(order); $event.stopPropagation()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            Start Work
+                        </button>
+                    </div>
+                    <div class="empty-column" *ngIf="getOrdersByStatus('Assigned').length === 0">
+                        <span>No assigned tasks</span>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon assigned">📋</div>
-                <div class="stat-value">{{ stats.myTasks }}</div>
-                <div class="stat-label">Assigned Tasks</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon completed">✅</div>
-                <div class="stat-value">{{ stats.completedToday }}</div>
-                <div class="stat-label">Completed Today</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon pending">⏰</div>
-                <div class="stat-value">{{ stats.pending }}</div>
-                <div class="stat-label">Pending Tasks</div>
-            </div>
-        </div>
-
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <h3 class="filter-header">Filter Work Orders</h3>
-            <div class="filter-pills">
-                <button class="filter-pill active">All</button>
-                <button class="filter-pill">Pending</button>
-                <button class="filter-pill">In Progress</button>
-                <button class="filter-pill">Completed</button>
-                <button class="filter-pill">High Priority</button>
-            </div>
-        </div>
-
-        <!-- Work Orders Grid -->
-        <div class="work-orders-grid">
-            <div class="work-order-card" *ngFor="let order of filteredWorkOrders" [ngClass]="order.priority">
-                <div class="order-header">
-                    <span class="order-id">#{{ order.id }}</span>
-                    <span class="order-priority" [ngClass]="order.priority">{{ order.priority }}</span>
+            <!-- IN PROGRESS Column -->
+            <div class="kanban-column">
+                <div class="column-header in-progress">
+                    <div class="column-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                        </svg>
+                    </div>
+                    <h3>In Progress</h3>
+                    <span class="column-count">{{ getOrdersByStatus('In-Progress').length }}</span>
                 </div>
-
-                <h3 class="order-title">{{ order.title }}</h3>
-                <p class="order-description">{{ order.description }}</p>
-
-                <div class="order-meta">
-                    <span>📍 {{ order.location }}</span>
-                    <span>📅 {{ order.created_at | date:'short' }}</span>
+                <div class="column-body">
+                    <div class="kanban-card" *ngFor="let order of getOrdersByStatus('In-Progress')"
+                        [ngClass]="'priority-' + order.priority" (click)="viewWorkOrder(order)">
+                        <div class="card-top">
+                            <span class="card-id">#{{ order.id }}</span>
+                            <span class="card-priority" [ngClass]="order.priority">{{ order.priority }}</span>
+                        </div>
+                        <h4 class="card-title">{{ order.title }}</h4>
+                        <p class="card-description">{{ order.description }}</p>
+                        <div class="card-meta">
+                            <span class="card-category">{{ getCategoryLabel(order.category) }}</span>
+                            <span class="card-date">{{ formatDate(order.created_at) }}</span>
+                        </div>
+                        <button class="card-action-btn complete"
+                            (click)="viewWorkOrder(order); $event.stopPropagation()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Mark Complete
+                        </button>
+                    </div>
+                    <div class="empty-column" *ngIf="getOrdersByStatus('In-Progress').length === 0">
+                        <span>No tasks in progress</span>
+                    </div>
                 </div>
+            </div>
 
-                <span class="order-status" [ngClass]="order.status">{{ order.status }}</span>
-
-                <div class="order-actions">
-                    <button class="btn btn-primary" (click)="startWork(order)" *ngIf="order.status === 'Assigned'">
-                        Start Work
-                    </button>
-                    <button class="btn btn-primary" *ngIf="order.status === 'In-Progress'"
+            <!-- COMPLETED Column -->
+            <div class="kanban-column">
+                <div class="column-header completed">
+                    <div class="column-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <h3>Completed</h3>
+                    <span class="column-count">{{ getOrdersByStatus('Resolved').length }}</span>
+                </div>
+                <div class="column-body">
+                    <div class="kanban-card completed-card" *ngFor="let order of getOrdersByStatus('Resolved')"
                         (click)="viewWorkOrder(order)">
-                        Mark Complete
-                    </button>
-                    <button class="btn btn-secondary" (click)="viewWorkOrder(order)">
-                        View Details
-                    </button>
+                        <div class="card-top">
+                            <span class="card-id">#{{ order.id }}</span>
+                            <span class="card-status-done">Done</span>
+                        </div>
+                        <h4 class="card-title">{{ order.title }}</h4>
+                        <div class="card-meta">
+                            <span class="card-category">{{ getCategoryLabel(order.category) }}</span>
+                        </div>
+                    </div>
+                    <div class="empty-column" *ngIf="getOrdersByStatus('Resolved').length === 0">
+                        <span>No completed tasks</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Request Detail Modal -->
-            <app-request-modal *ngIf="selectedWorkOrder" [request]="selectedWorkOrder" [userRole]="'Technician'"
-                [userId]="userId" (close)="closeModal()" (updated)="loadData()">
-            </app-request-modal>
-
-            <!-- Empty State -->
-            <div class="empty-state" *ngIf="filteredWorkOrders.length === 0">
-                <div class="empty-state-icon">📭</div>
-                <h3>No Work Orders</h3>
-                <p>You don't have any work orders matching the current filter.</p>
-            </div>
-        </div>
+        </section>
     </div>
+
+    <!-- Request Detail Modal -->
+    <app-request-modal *ngIf="selectedWorkOrder" [request]="selectedWorkOrder" [userRole]="'Technician'"
+        [userId]="userId" (close)="closeModal()" (updated)="loadData()">
+    </app-request-modal>
 </div>

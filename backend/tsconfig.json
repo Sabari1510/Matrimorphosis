@@ -37,7 +37,7 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
     "esModuleInterop": true
   }
 }

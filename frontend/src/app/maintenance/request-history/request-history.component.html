@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="header-right">
-                <a routerLink="/resident-dashboard" class="back-button">
+                <a [routerLink]="dashboardRoute" class="back-button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
@@ -49,7 +49,10 @@
                     </span>
                     <button class="delete-btn" (click)="deleteRequest($event, request.id)"
                         *ngIf="request.status !== 'Resolved' && !request.is_deleted" title="Delete Request">
-                        🗑️
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
 
@@ -116,7 +119,7 @@
         <div *ngIf="!isLoading && requests.length === 0" class="empty-state">
             <p>No requests found</p>
             <p class="empty-subtitle">You haven't submitted any maintenance requests yet</p>
-            <a routerLink="/resident-dashboard" class="btn btn-primary">Go to Dashboard</a>
+            <a [routerLink]="dashboardRoute" class="btn btn-primary">Go to Dashboard</a>
         </div>
     </div>
 

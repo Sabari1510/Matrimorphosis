@@ -1,0 +1,439 @@
+/* ============================================
+   ADMIN STATS - DASHBOARD CONSISTENCY THEME
+   Removing heavy effects for clean integration
+   ============================================ */
+
+.stats-dashboard {
+    background: var(--color-bg-base);
+    min-height: 100vh;
+    padding: 100px var(--space-5) var(--space-6);
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header Section */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    margin-bottom: var(--space-5);
+    box-shadow: var(--shadow-md);
+}
+
+.header-content {
+    flex: 1;
+}
+
+.page-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.page-title .accent {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.page-subtitle {
+    color: var(--color-text-muted);
+    margin: var(--space-1) 0 0;
+    font-size: var(--font-size-base);
+}
+
+.btn-refresh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--color-bg-medium);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-refresh:hover:not(:disabled) {
+    background: var(--color-bg-hover);
+    border-color: var(--color-border-gold);
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Stats Grid - Mirror Dashboard */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.stat-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-border-gold);
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.stat-icon.total {
+    background: rgba(4, 120, 87, 0.15);
+}
+
+.stat-icon.total svg {
+    stroke: var(--color-primary-main);
+}
+
+.stat-icon.pending {
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.stat-icon.pending svg {
+    stroke: var(--color-secondary-main);
+}
+
+.stat-icon.completed {
+    background: rgba(34, 197, 94, 0.15);
+}
+
+.stat-icon.completed svg {
+    stroke: #22c55e;
+}
+
+.stat-icon.progress {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.stat-icon.progress svg {
+    stroke: #3b82f6;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+/* Analytics Segmented Layout */
+.admin-analytics-segment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Smaller Trends chart */
+    gap: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.chart-segment-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Put side charts next to each other */
+    gap: var(--space-5);
+}
+
+/* Wait, if Trends is 1fr and side-segment is 1fr, 
+   then Trends is already smaller. 
+   Inside side-segment, I can put them vertically or horizontally.
+   Horizontal might be too crowded.
+*/
+
+.admin-analytics-segment {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 equal columns for all 3 charts */
+    gap: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.chart-segment-side {
+    display: contents;
+    /* Allow children to be part of the parent grid */
+}
+
+/* Or simpler: */
+.admin-analytics-segment {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.chart-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-header {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.chart-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.chart-subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.chart-container-inner {
+    height: 250px;
+    /* Reduced from 320px */
+    position: relative;
+    flex: 1;
+}
+
+.chart-container-inner.doughnut {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Table Section */
+.table-section {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-md);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.badge {
+    display: inline-flex;
+    padding: 4px 12px;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--color-secondary-main);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    background: var(--color-bg-medium);
+}
+
+th {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+td {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.tech-info-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.tech-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gradient-emerald);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-accent);
+    font-weight: var(--font-weight-bold);
+}
+
+.tech-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.tech-name {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+.tech-role {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--color-bg-hover);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--gradient-emerald);
+    border-radius: var(--radius-full);
+}
+
+/* Re-adjusting progress bar width logic since it doesn't use pseudo-elements for width in other places */
+.progress-bar {
+    background: var(--color-bg-hover);
+}
+
+.progress-bar-container .progress-bar {
+    background: var(--gradient-emerald);
+    /* The [style.width.%] in HTML will handle the width */
+}
+
+/* Correcting Dashboard-style progress bar */
+.progress-bar-container {
+    width: 150px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: var(--gradient-emerald);
+    border-radius: var(--radius-full);
+}
+
+.progress-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-secondary-main);
+    font-weight: var(--font-weight-medium);
+}
+
+.no-data {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-dashboard {
+        padding: 80px var(--space-4) var(--space-4);
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        gap: var(--space-4);
+        text-align: center;
+    }
+}

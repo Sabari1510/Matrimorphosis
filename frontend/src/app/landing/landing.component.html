@@ -1,183 +1,614 @@
 <div class="landing-page">
-    <!-- Navbar -->
-    <nav class="landing-navbar">
+    <!-- ============================
+         SOLID HEADER MASK (Hides scrolled content)
+         ============================ -->
+    <div class="navbar-mask"></div>
+
+    <!-- ============================
+         FLOATING LOGO (Outside Navbar)
+         ============================ -->
+    <div class="floating-logo">
+        <a [routerLink]="isLoggedIn ? dashboardRoute : '/'">
+            <img src="assets/logo.png" alt="Logo" class="logo-img">
+        </a>
+    </div>
+
+    <!-- ============================
+         FLOATING PILL NAVBAR
+         ============================ -->
+    <nav class="navbar">
         <div class="navbar-container">
-            <div class="navbar-brand">
-                <span class="brand-text">Maintenance<span class="brand-accent">#</span></span>
-            </div>
             <div class="navbar-links">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#benefits" class="nav-link">Benefits</a>
-                <a routerLink="/login" class="nav-link-btn">Sign In</a>
-                <a routerLink="/signup" class="nav-link-btn-primary">Get Started</a>
+                <a href="#features" class="nav-link">About</a>
+                <a href="#how-it-works" class="nav-link">How it Works</a>
+                <a href="#roles" class="nav-link">Roles</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a [routerLink]="dashboardRoute" class="nav-link">{{ isLoggedIn ? 'Dashboard' : 'Sign In' }}</a>
             </div>
+
+            <a [routerLink]="isLoggedIn ? dashboardRoute : '/signup'" class="btn-apply">{{ isLoggedIn ? 'Profile' :
+                'Sign Up' }}</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Floating Menu Toggle (Mobile) -->
+    <button class="floating-menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+    </button>
+
+    <!-- ============================
+         HERO SECTION
+         ============================ -->
     <section class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    Your Home<span class="accent-hash">#</span>
-                    <br>Maintenance Made Simple
-                </h1>
-                <p class="hero-subtitle">
-                    Track requests, manage repairs, and keep your property running smoothly with our modern maintenance
-                    management platform.
-                </p>
-                <div class="hero-actions">
-                    <a routerLink="/signup" class="btn btn-primary">Get Started</a>
-                    <a routerLink="/login" class="btn btn-secondary">Sign In</a>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge animate-fade-up">
+                    <span class="badge-icon">🏠</span>
+                    <span class="badge-text">For Apartment Communities</span>
+                </div>
+                <h1 class="hero-title animate-fade-up delay-1">Maintenance that <span>actually gets done.</span></h1>
+                <p class="hero-subtitle animate-fade-up delay-2">One portal for residents, technicians, and admins to
+                    track every issue from request to resolution. Quick response, full visibility.</p>
+                <div class="hero-actions animate-fade-up delay-3">
+                    <a [routerLink]="dashboardRoute" class="btn-primary btn-lg">
+                        <span>{{ isLoggedIn ? 'Go to Dashboard' : "Let's Go" }}</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div class="trust-row animate-fade-up delay-4">
+                    <div class="trust-item">
+                        <span class="trust-value">1,240+</span>
+                        <span class="trust-label">Requests Resolved</span>
+                    </div>
+                    <div class="trust-divider"></div>
+                    <div class="trust-item">
+                        <span class="trust-value">4.8</span>
+                        <span class="trust-label">Avg Rating</span>
+                    </div>
+                    <div class="trust-divider"></div>
+                    <div class="trust-item">
+                        <span class="trust-value">1.8h</span>
+                        <span class="trust-label">Avg Response</span>
+                    </div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <img src="/mobile-app.png" alt="Mobile Maintenance App" class="hero-image hero-image-1">
-                <img src="/technician-work.png" alt="Technician Workflow" class="hero-image hero-image-2">
+
+            <!-- ============================
+                 BUILDING ILLUSTRATION HERO
+                 ============================ -->
+            <div class="hero-buildings animate-slide-left">
+                <!-- Building Skyline SVG -->
+                <div class="buildings-wrapper">
+                    <svg class="buildings-svg" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Building 1 - Tall Left -->
+                        <rect x="40" y="80" width="100" height="280" rx="8" fill="url(#building1)" stroke="#334155"
+                            stroke-width="1" />
+                        <!-- Windows -->
+                        <rect x="55" y="100" width="18" height="24" rx="2" fill="#0f172a" class="window light-1" />
+                        <rect x="82" y="100" width="18" height="24" rx="2" fill="#D4AF37" opacity="0.8"
+                            class="window lit" />
+                        <rect x="109" y="100" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="55" y="140" width="18" height="24" rx="2" fill="#047857" opacity="0.6"
+                            class="window lit" />
+                        <rect x="82" y="140" width="18" height="24" rx="2" fill="#0f172a" class="window light-2" />
+                        <rect x="109" y="140" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="55" y="180" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="82" y="180" width="18" height="24" rx="2" fill="#D4AF37" opacity="0.5"
+                            class="window lit" />
+                        <rect x="109" y="180" width="18" height="24" rx="2" fill="#047857" opacity="0.8"
+                            class="window lit" />
+                        <rect x="55" y="220" width="18" height="24" rx="2" fill="#0f172a" class="window light-3" />
+                        <rect x="82" y="220" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="109" y="220" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="55" y="260" width="18" height="24" rx="2" fill="#D4AF37" opacity="0.6"
+                            class="window lit" />
+                        <rect x="82" y="260" width="18" height="24" rx="2" fill="#047857" opacity="0.7"
+                            class="window lit" />
+                        <rect x="109" y="260" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="55" y="300" width="18" height="24" rx="2" fill="#0f172a" class="window light-1" />
+                        <rect x="82" y="300" width="18" height="24" rx="2" fill="#0f172a" class="window" />
+                        <rect x="109" y="300" width="18" height="24" rx="2" fill="#D4AF37" opacity="0.4"
+                            class="window lit" />
+                        <!-- Entrance -->
+                        <rect x="75" y="330" width="30" height="30" rx="2" fill="#047857" opacity="0.3" />
+
+                        <!-- Building 2 - Center Tall -->
+                        <rect x="160" y="40" width="120" height="320" rx="8" fill="url(#building2)" stroke="#334155"
+                            stroke-width="1" />
+                        <!-- Rooftop -->
+                        <rect x="200" y="20" width="40" height="20" rx="4" fill="#334155" />
+                        <!-- Windows -->
+                        <rect x="175" y="60" width="22" height="28" rx="2" fill="#D4AF37" opacity="0.9"
+                            class="window lit" />
+                        <rect x="209" y="60" width="22" height="28" rx="2" fill="#0f172a" class="window" />
+                        <rect x="243" y="60" width="22" height="28" rx="2" fill="#047857" opacity="0.7"
+                            class="window lit" />
+                        <rect x="175" y="105" width="22" height="28" rx="2" fill="#0f172a" class="window light-2" />
+                        <rect x="209" y="105" width="22" height="28" rx="2" fill="#D4AF37" opacity="0.6"
+                            class="window lit" />
+                        <rect x="243" y="105" width="22" height="28" rx="2" fill="#0f172a" class="window" />
+                        <rect x="175" y="150" width="22" height="28" rx="2" fill="#0f172a" class="window" />
+                        <rect x="209" y="150" width="22" height="28" rx="2" fill="#0f172a" class="window light-3" />
+                        <rect x="243" y="150" width="22" height="28" rx="2" fill="#D4AF37" opacity="0.5"
+                            class="window lit" />
+                        <rect x="175" y="195" width="22" height="28" rx="2" fill="#047857" opacity="0.8"
+                            class="window lit" />
+                        <rect x="209" y="195" width="22" height="28" rx="2" fill="#0f172a" class="window" />
+                        <rect x="243" y="195" width="22" height="28" rx="2" fill="#0f172a" class="window light-1" />
+                        <rect x="175" y="240" width="22" height="28" rx="2" fill="#0f172a" class="window" />
+                        <rect x="209" y="240" width="22" height="28" rx="2" fill="#D4AF37" opacity="0.7"
+                            class="window lit" />
+                        <rect x="243" y="240" width="22" height="28" rx="2" fill="#0f172a" class="window" />
+                        <rect x="175" y="285" width="22" height="28" rx="2" fill="#0f172a" class="window light-2" />
+                        <rect x="209" y="285" width="22" height="28" rx="2" fill="#047857" opacity="0.6"
+                            class="window lit" />
+                        <rect x="243" y="285" width="22" height="28" rx="2" fill="#D4AF37" opacity="0.4"
+                            class="window lit" />
+                        <!-- Entrance -->
+                        <rect x="195" y="330" width="50" height="30" rx="2" fill="#047857" opacity="0.4" />
+
+                        <!-- Building 3 - Right Medium -->
+                        <rect x="300" y="120" width="90" height="240" rx="8" fill="url(#building3)" stroke="#334155"
+                            stroke-width="1" />
+                        <!-- Windows -->
+                        <rect x="315" y="140" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+                        <rect x="340" y="140" width="16" height="22" rx="2" fill="#D4AF37" opacity="0.8"
+                            class="window lit" />
+                        <rect x="365" y="140" width="16" height="22" rx="2" fill="#0f172a" class="window light-3" />
+                        <rect x="315" y="175" width="16" height="22" rx="2" fill="#047857" opacity="0.7"
+                            class="window lit" />
+                        <rect x="340" y="175" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+                        <rect x="365" y="175" width="16" height="22" rx="2" fill="#D4AF37" opacity="0.5"
+                            class="window lit" />
+                        <rect x="315" y="210" width="16" height="22" rx="2" fill="#0f172a" class="window light-1" />
+                        <rect x="340" y="210" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+                        <rect x="365" y="210" width="16" height="22" rx="2" fill="#047857" opacity="0.6"
+                            class="window lit" />
+                        <rect x="315" y="245" width="16" height="22" rx="2" fill="#D4AF37" opacity="0.6"
+                            class="window lit" />
+                        <rect x="340" y="245" width="16" height="22" rx="2" fill="#0f172a" class="window light-2" />
+                        <rect x="365" y="245" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+                        <rect x="315" y="280" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+                        <rect x="340" y="280" width="16" height="22" rx="2" fill="#047857" opacity="0.8"
+                            class="window lit" />
+                        <rect x="365" y="280" width="16" height="22" rx="2" fill="#D4AF37" opacity="0.4"
+                            class="window lit" />
+                        <rect x="315" y="315" width="16" height="22" rx="2" fill="#0f172a" class="window light-3" />
+                        <rect x="340" y="315" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+                        <rect x="365" y="315" width="16" height="22" rx="2" fill="#0f172a" class="window" />
+
+                        <!-- Building 4 - Far Right Small -->
+                        <rect x="410" y="180" width="70" height="180" rx="6" fill="url(#building4)" stroke="#334155"
+                            stroke-width="1" />
+                        <rect x="420" y="200" width="14" height="18" rx="2" fill="#D4AF37" opacity="0.7"
+                            class="window lit" />
+                        <rect x="440" y="200" width="14" height="18" rx="2" fill="#0f172a" class="window" />
+                        <rect x="460" y="200" width="14" height="18" rx="2" fill="#047857" opacity="0.5"
+                            class="window lit" />
+                        <rect x="420" y="230" width="14" height="18" rx="2" fill="#0f172a" class="window light-1" />
+                        <rect x="440" y="230" width="14" height="18" rx="2" fill="#D4AF37" opacity="0.5"
+                            class="window lit" />
+                        <rect x="460" y="230" width="14" height="18" rx="2" fill="#0f172a" class="window" />
+                        <rect x="420" y="260" width="14" height="18" rx="2" fill="#047857" opacity="0.6"
+                            class="window lit" />
+                        <rect x="440" y="260" width="14" height="18" rx="2" fill="#0f172a" class="window light-2" />
+                        <rect x="460" y="260" width="14" height="18" rx="2" fill="#0f172a" class="window" />
+                        <rect x="420" y="290" width="14" height="18" rx="2" fill="#0f172a" class="window" />
+                        <rect x="440" y="290" width="14" height="18" rx="2" fill="#0f172a" class="window" />
+                        <rect x="460" y="290" width="14" height="18" rx="2" fill="#D4AF37" opacity="0.4"
+                            class="window lit" />
+                        <rect x="420" y="320" width="14" height="18" rx="2" fill="#0f172a" class="window light-3" />
+                        <rect x="440" y="320" width="14" height="18" rx="2" fill="#047857" opacity="0.4"
+                            class="window lit" />
+                        <rect x="460" y="320" width="14" height="18" rx="2" fill="#0f172a" class="window" />
+
+                        <!-- Ground -->
+                        <rect x="20" y="360" width="470" height="8" rx="4" fill="#334155" />
+
+                        <!-- Gradients -->
+                        <defs>
+                            <linearGradient id="building1" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#334155" />
+                                <stop offset="100%" stop-color="#1e293b" />
+                            </linearGradient>
+                            <linearGradient id="building2" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#475569" />
+                                <stop offset="100%" stop-color="#1e293b" />
+                            </linearGradient>
+                            <linearGradient id="building3" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#3f4f63" />
+                                <stop offset="100%" stop-color="#1e293b" />
+                            </linearGradient>
+                            <linearGradient id="building4" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#334155" />
+                                <stop offset="100%" stop-color="#1e293b" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <!-- Floating Maintenance Icons -->
+                <div class="floating-tool tool-1">
+                    <div class="tool-icon">🔧</div>
+                    <div class="tool-pulse"></div>
+                </div>
+                <div class="floating-tool tool-2">
+                    <div class="tool-icon">⚡</div>
+                    <div class="tool-pulse"></div>
+                </div>
+                <div class="floating-tool tool-3">
+                    <div class="tool-icon">🔔</div>
+                    <div class="tool-pulse"></div>
+                </div>
+                <div class="floating-tool tool-4">
+                    <div class="tool-icon">✓</div>
+                    <div class="tool-pulse success"></div>
+                </div>
+
+                <!-- Status Notification Card -->
+                <div class="hero-notif-card animate-pop delay-2">
+                    <div class="notif-header">
+                        <span class="notif-badge">Block B, Unit 403</span>
+                        <span class="notif-status progress">In Progress</span>
+                    </div>
+                    <div class="notif-body">
+                        <span class="notif-title">Leaky tap repair</span>
+                        <span class="notif-eta">ETA: 30 mins</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- ============================
+         WHY RESIDENTS TRUST IT
+         ============================ -->
     <section class="features" id="features">
-        <div class="features-header">
-            <h2 class="section-title">Everything You Need</h2>
-            <p class="section-subtitle">Powerful features for residents, technicians, and administrators</p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon resident">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
-                            fill="#4A90E2" />
-                    </svg>
-                </div>
-                <h3>For Residents</h3>
-                <p>Submit maintenance requests easily, track status in real-time, and receive instant updates.</p>
-                <ul class="feature-list">
-                    <li>Quick request submission</li>
-                    <li>Real-time status tracking</li>
-                    <li>Photo upload support</li>
-                    <li>Request history</li>
-                </ul>
+        <div class="section-container">
+            <div class="section-header animate-fade-up">
+                <h2 class="section-title">Why Residents <span>Trust It</span></h2>
+                <p class="section-subtitle">Simple tools that make maintenance stress-free</p>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon technician">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M22.7 19L13.6 9.9C14.5 7.6 14 4.9 12.1 3C10.1 1 7.1 0.6 4.7 1.7L9 6L6 9L1.6 4.7C0.4 7.1 0.9 10.1 2.9 12.1C4.8 14 7.5 14.5 9.8 13.6L18.9 22.7C19.3 23.1 19.9 23.1 20.3 22.7L22.6 20.4C23.1 20 23.1 19.3 22.7 19Z"
-                            fill="#6DD5B4" />
-                    </svg>
+            <div class="features-grid">
+                <div class="feature-card animate-scale-in">
+                    <div class="feature-accent"></div>
+                    <div class="feature-icon">📝</div>
+                    <h3>Raise Requests in Seconds</h3>
+                    <p>Select a category, attach photos, and submit. Technicians get all the details instantly.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Plumbing</span>
+                        <span class="tag">Electrical</span>
+                        <span class="tag">Painting</span>
+                        <span class="tag">Other</span>
+                    </div>
                 </div>
-                <h3>For Technicians</h3>
-                <p>Manage assigned tasks efficiently with priority-based workflow and progress tracking.</p>
-                <ul class="feature-list">
-                    <li>Task assignment system</li>
-                    <li>Priority filtering</li>
-                    <li>Status updates</li>
-                    <li>Work history</li>
-                </ul>
-            </div>
 
-            <div class="feature-card">
-                <div class="feature-icon admin">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17Z"
-                            fill="#FF6B9D" />
-                    </svg>
+                <div class="feature-card animate-scale-in delay-1">
+                    <div class="feature-accent"></div>
+                    <div class="feature-icon">🔔</div>
+                    <h3>Track Every Visit</h3>
+                    <p>Real-time status updates from submission to resolution.</p>
+                    <div class="status-chips">
+                        <span class="chip submitted">Submitted</span>
+                        <span class="chip assigned">Assigned</span>
+                        <span class="chip progress">In Progress</span>
+                        <span class="chip completed">Completed</span>
+                    </div>
                 </div>
-                <h3>For Administrators</h3>
-                <p>Comprehensive dashboard with analytics, staff management, and oversight capabilities.</p>
-                <ul class="feature-list">
-                    <li>Analytics dashboard</li>
-                    <li>Staff management</li>
-                    <li>Request assignment</li>
-                    <li>Performance tracking</li>
-                </ul>
-            </div>
-        </div>
-    </section>
 
-    <!-- Benefits Section -->
-    <section class="benefits" id="benefits">
-        <div class="benefits-content">
-            <div class="benefits-text">
-                <h2 class="section-title">Why Choose Our Platform?</h2>
-                <div class="benefit-item">
-                    <div class="benefit-number">01</div>
-                    <div class="benefit-info">
-                        <h3>Faster Resolution</h3>
-                        <p>Reduce response time by 60% with automated assignment and real-time notifications.</p>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-number">02</div>
-                    <div class="benefit-info">
-                        <h3>Complete Transparency</h3>
-                        <p>Track every request from submission to completion with detailed status updates.</p>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-number">03</div>
-                    <div class="benefit-info">
-                        <h3>Better Organization</h3>
-                        <p>Centralized system for all maintenance activities with comprehensive reporting.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="benefits-visual">
-                <div class="stats-card">
-                    <div class="stat">
-                        <div class="stat-value">60%</div>
-                        <div class="stat-label">Faster Response</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">24/7</div>
-                        <div class="stat-label">Availability</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">100%</div>
-                        <div class="stat-label">Transparency</div>
+                <div class="feature-card animate-scale-in delay-2">
+                    <div class="feature-accent"></div>
+                    <div class="feature-icon">⭐</div>
+                    <h3>Give Feedback</h3>
+                    <p>Rate your experience. Help improve service quality.</p>
+                    <div class="rating-demo">
+                        <span class="star filled">★</span>
+                        <span class="star filled">★</span>
+                        <span class="star filled">★</span>
+                        <span class="star filled">★</span>
+                        <span class="star">★</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="cta-content">
-            <h2>Ready to Get Started?</h2>
-            <p>Join hundreds of satisfied residents and property managers today.</p>
-            <div class="cta-actions">
-                <a routerLink="/signup" class="btn btn-primary btn-large">Create Account</a>
-                <a routerLink="/login" class="btn btn-outline btn-large">Sign In</a>
+    <!-- ============================
+         HOW IT WORKS
+         ============================ -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-container">
+            <div class="section-header animate-fade-up">
+                <h2 class="section-title">How It <span>Works</span></h2>
+                <p class="section-subtitle">Three simple steps from issue to resolution</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card animate-slide-up">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <h3>Resident Submits</h3>
+                    <p>Fill in the form, select a category, attach a photo.</p>
+                    <span class="step-status submitted">Submitted</span>
+                </div>
+
+                <div class="step-connector animate-draw-line">
+                    <svg width="60" height="20" viewBox="0 0 60 20">
+                        <path d="M0 10h55M55 10l-6-6M55 10l-6 6" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+
+                <div class="step-card animate-slide-up delay-1">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M9 11l3 3L22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                    </div>
+                    <h3>Admin Assigns</h3>
+                    <p>Admin reviews and assigns the right technician.</p>
+                    <div class="step-statuses">
+                        <span class="step-status assigned">Assigned</span>
+                        <span class="step-status progress">In Progress</span>
+                    </div>
+                </div>
+
+                <div class="step-connector animate-draw-line delay-1">
+                    <svg width="60" height="20" viewBox="0 0 60 20">
+                        <path d="M0 10h55M55 10l-6-6M55 10l-6 6" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+
+                <div class="step-card animate-slide-up delay-2">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <h3>Resolved & Rated</h3>
+                    <p>Technician completes work. Resident rates service.</p>
+                    <span class="step-status completed">Completed</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Simple Footer -->
-    <footer class="simple-footer">
-        <div class="footer-contact">
-            <div class="contact-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path
-                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
-                <span>+1 (555) 123-4567</span>
+    <!-- ============================
+         ROLE-BASED MINI VIEWS
+         ============================ -->
+    <section class="roles" id="roles">
+        <div class="section-container">
+            <div class="section-header animate-fade-up">
+                <h2 class="section-title">Built for <span>Every Role</span></h2>
+                <p class="section-subtitle">Tailored dashboards with role-based access</p>
             </div>
-            <div class="contact-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                </svg>
-                <span>support&#64;maintenance.com</span>
+
+            <div class="roles-grid">
+                <!-- Resident Panel -->
+                <div class="role-panel animate-flip-in">
+                    <div class="role-header resident">
+                        <span class="role-badge">Resident</span>
+                    </div>
+                    <div class="role-mockup">
+                        <div class="mock-section">
+                            <h4>New Request</h4>
+                            <div class="mock-form">
+                                <div class="mock-input">Category: Plumbing</div>
+                                <div class="mock-input">Description: Leaky tap...</div>
+                                <button class="mock-btn">Submit Request</button>
+                            </div>
+                        </div>
+                        <div class="mock-section">
+                            <h4>Request History</h4>
+                            <div class="mock-list">
+                                <div class="mock-item">
+                                    <span>AC Repair</span>
+                                    <span class="chip completed">Completed</span>
+                                </div>
+                                <div class="mock-item">
+                                    <span>Leaky Tap</span>
+                                    <span class="chip progress">In Progress</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technician Panel -->
+                <div class="role-panel animate-flip-in delay-1">
+                    <div class="role-header technician">
+                        <span class="role-badge">Technician</span>
+                    </div>
+                    <div class="role-mockup">
+                        <div class="mock-section">
+                            <h4>My Tasks</h4>
+                            <div class="mock-list">
+                                <div class="mock-item">
+                                    <span>B-403: Leaky Tap</span>
+                                    <span class="chip submitted">New</span>
+                                </div>
+                                <div class="mock-item">
+                                    <span>A-201: AC Issue</span>
+                                    <span class="chip progress">In Progress</span>
+                                </div>
+                                <div class="mock-item">
+                                    <span>C-105: Power Outlet</span>
+                                    <span class="chip completed">Resolved</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel -->
+                <div class="role-panel animate-flip-in delay-2">
+                    <div class="role-header admin">
+                        <span class="role-badge">Admin</span>
+                    </div>
+                    <div class="role-mockup">
+                        <div class="mock-section">
+                            <h4>Dashboard Overview</h4>
+                            <div class="mock-stats">
+                                <div class="mini-stat">
+                                    <span class="mini-value submitted">12</span>
+                                    <span class="mini-label">Pending</span>
+                                </div>
+                                <div class="mini-stat">
+                                    <span class="mini-value progress">8</span>
+                                    <span class="mini-label">In Progress</span>
+                                </div>
+                                <div class="mini-stat">
+                                    <span class="mini-value completed">45</span>
+                                    <span class="mini-label">Resolved</span>
+                                </div>
+                            </div>
+                            <div class="mock-rating-bar">
+                                <span>Avg Rating</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 92%"></div>
+                                </div>
+                                <span>4.6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <p class="copyright">&copy; 2025 Maintenance<span class="footer-accent">#</span> - All rights reserved.</p>
+    </section>
+
+    <!-- ============================
+         METRICS BAND
+         ============================ -->
+    <section class="metrics-band">
+        <div class="section-container">
+            <div class="metrics-grid">
+                <div class="metric-card animate-count-up">
+                    <div class="metric-icon coral">📊</div>
+                    <span class="metric-value">1,240+</span>
+                    <span class="metric-label">Requests resolved this month</span>
+                </div>
+                <div class="metric-card animate-count-up delay-1">
+                    <div class="metric-icon info">⏱️</div>
+                    <span class="metric-value">2.4 hrs</span>
+                    <span class="metric-label">Average first response time</span>
+                </div>
+                <div class="metric-card animate-count-up delay-2">
+                    <div class="metric-icon success">😊</div>
+                    <span class="metric-value">94%</span>
+                    <span class="metric-label">Resident satisfaction score</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         TESTIMONIALS
+         ============================ -->
+    <section class="testimonials" id="testimonials">
+        <div class="section-container">
+            <div class="section-header animate-fade-up">
+                <h2 class="section-title">What People Are <span>Saying</span></h2>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card animate-slide-right">
+                    <div class="testimonial-quote">I raised a plumbing issue at 8 AM and it was fixed by noon. The
+                        tracking feature is so helpful!</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar coral">RP</div>
+                        <div class="author-info">
+                            <span class="author-name">Rajesh Patel</span>
+                            <span class="author-role">Resident, Green Heights</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card animate-slide-right delay-1">
+                    <div class="testimonial-quote">Finally, a system that doesn't require chasing people. I see all my
+                        tasks in one place.</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar teal">SK</div>
+                        <div class="author-info">
+                            <span class="author-name">Suresh Kumar</span>
+                            <span class="author-role">Technician</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card animate-slide-right delay-2">
+                    <div class="testimonial-quote">The admin dashboard gives me full visibility. I can spot patterns and
+                        improve our response times.</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar amber">AM</div>
+                        <div class="author-info">
+                            <span class="author-name">Anita Menon</span>
+                            <span class="author-role">Society Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         FINAL CTA
+         ============================ -->
+    <section class="final-cta">
+        <div class="section-container">
+            <div class="cta-content animate-fade-up">
+                <h2>Ready to bring order to your apartment maintenance?</h2>
+                <p>Start tracking requests, improving response times, and keeping residents happy.</p>
+                <div class="cta-actions">
+                    <a [routerLink]="isLoggedIn ? dashboardRoute : '/signup'" class="btn-primary btn-lg">
+                        {{ isLoggedIn ? 'View My Requests' : 'Get Started' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         FOOTER
+         ============================ -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="brand-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9.5L12 4L21 9.5V20.5H3V9.5Z" />
+                    </svg>
+                </div>
+                <span class="brand-name">Maintenance Tracker</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Docs</a>
+                <a href="#">Privacy</a>
+                <a href="#">Contact</a>
+            </div>
+            <p class="footer-copyright">&copy; 2025 Maintenance Tracker. All rights reserved.</p>
+        </div>
     </footer>
 </div>

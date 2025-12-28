@@ -18,13 +18,24 @@ export class RequestHistoryComponent implements OnInit {
   requests: MaintenanceRequest[] = [];
   selectedDetailRequest: MaintenanceRequest | null = null;
   userId: number = 0;
+  userRole: string = '';
   isLoading = true;
 
   constructor(
     private requestService: RequestService,
     private authService: AuthService
   ) {
-    this.userId = this.authService.getUser()?.id || 0;
+    const user = this.authService.getUser();
+    this.userId = user?.id || 0;
+    this.userRole = user?.role || '';
+  }
+
+  /** Returns the correct dashboard route based on user role */
+  get dashboardRoute(): string {
+    const role = this.userRole.toLowerCase();
+    if (role === 'admin') return '/admin/dashboard';
+    if (role === 'technician' || role === 'staff') return '/technician/dashboard';
+    return '/resident-dashboard';
   }
 
   ngOnInit(): void {

@@ -38,31 +38,55 @@ export class NavbarComponent implements OnInit {
             label: 'Dashboard',
             icon: 'dashboard',
             route: '/admin/dashboard',
-            roles: ['admin']
+            roles: ['admin', 'Admin']
+        },
+        {
+            label: 'Manage Requests',
+            icon: 'requests',
+            route: '/admin/manage-requests',
+            roles: ['admin', 'Admin']
+        },
+        {
+            label: 'Manage Staff',
+            icon: 'work',
+            route: '/admin/manage-staff',
+            roles: ['admin', 'Admin']
+        },
+        {
+            label: 'Stats',
+            icon: 'reports',
+            route: '/admin/stats',
+            roles: ['admin', 'Admin']
         },
         {
             label: 'Dashboard',
             icon: 'dashboard',
             route: '/technician/dashboard',
-            roles: ['staff']
+            roles: ['staff', 'Staff', 'technician', 'Technician']
+        },
+        {
+            label: 'My Tasks',
+            icon: 'requests',
+            route: '/maintenance/history',
+            roles: ['staff', 'Staff', 'technician', 'Technician']
         },
         {
             label: 'Dashboard',
             icon: 'dashboard',
             route: '/resident-dashboard',
-            roles: ['resident']
+            roles: ['resident', 'Resident']
         },
         {
-            label: 'Requests',
+            label: 'My Requests',
             icon: 'requests',
             route: '/maintenance/history',
-            roles: ['admin', 'staff', 'resident']
+            roles: ['resident', 'Resident']
         },
         {
             label: 'New Request',
             icon: 'add',
             route: '/maintenance/new',
-            roles: ['resident']
+            roles: ['resident', 'Resident']
         }
     ];
 
@@ -79,8 +103,9 @@ export class NavbarComponent implements OnInit {
 
     get filteredMenuItems(): MenuItem[] {
         if (!this.currentUser) return [];
+        const userRole = this.currentUser.role.toLowerCase();
         return this.menuItems.filter(item =>
-            item.roles.includes(this.currentUser!.role)
+            item.roles.some(role => role.toLowerCase() === userRole)
         );
     }
 

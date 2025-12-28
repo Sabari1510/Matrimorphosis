@@ -31,10 +31,7 @@ interface StaffPerformance {
     templateUrl: './admin-dashboard.component.html',
     styleUrl: './admin-dashboard.component.css'
 })
-export class AdminDashboardComponent implements OnInit, AfterViewInit {
-    @ViewChild('categoryChart') categoryChartRef!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('statusChart') statusChartRef!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('trendChart') trendChartRef!: ElementRef<HTMLCanvasElement>;
+export class AdminDashboardComponent implements OnInit {
 
     stats = {
         totalRequests: 0,
@@ -61,10 +58,6 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     selectedStaffId = '';
     userName: string = '';
     userId: number = 0;
-
-    private categoryChart?: Chart;
-    private statusChart?: Chart;
-    private trendChart?: Chart;
 
     categories = [
         { value: 'plumbing', label: 'Plumbing' },
@@ -94,22 +87,11 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.loadData();
     }
 
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-            this.initializeCharts();
-        }, 100);
-    }
-
     loadData(): void {
         this.requestService.getRequests().subscribe((requests: any[]) => {
             this.allRequests = requests as MaintenanceRequest[];
             this.recentRequests = this.allRequests.slice(0, 10);
             this.calculateStats();
-
-            // Update charts if already initialized
-            if (this.categoryChart) {
-                this.updateCharts();
-            }
         });
 
         // Load real technicians from database
@@ -164,160 +146,6 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         this.stats.overdueRequests = this.allRequests.filter(r =>
             r.status === 'New' && new Date(r.created_at) < sevenDaysAgo
         ).length;
-    }
-
-    initializeCharts(): void {
-        this.createCategoryChart();
-        this.createStatusChart();
-        this.createTrendChart();
-    }
-
-    createCategoryChart(): void {
-        if (!this.categoryChartRef) return;
-
-        const categoryCounts = this.categories.map(cat => ({
-            label: cat.label,
-            count: this.allRequests.filter(r => r.category === cat.value).length
-        })).filter(c => c.count > 0);
-
-        const config: ChartConfiguration = {
-            type: 'bar',
-            data: {
-                labels: categoryCounts.map(c => c.label),
-                datasets: [{
-                    label: 'Complaints',
-                    data: categoryCounts.map(c => c.count),
-                    backgroundColor: '#4A90E2',
-                    borderRadius: 8,
-                    barThickness: 40
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 }
-                    }
-                }
-            }
-        };
-
-        this.categoryChart = new Chart(this.categoryChartRef.nativeElement, config);
-    }
-
-    createStatusChart(): void {
-        if (!this.statusChartRef) return;
-
-        const statusCounts = {
-            pending: this.allRequests.filter(r => r.status === 'New').length,
-            assigned: this.allRequests.filter(r => r.status === 'Assigned').length,
-            inProgress: this.allRequests.filter(r => r.status === 'In-Progress').length,
-            completed: this.allRequests.filter(r => r.status === 'Resolved').length
-        };
-
-        const config: ChartConfiguration = {
-            type: 'doughnut',
-            data: {
-                labels: ['Pending', 'Assigned', 'In Progress', 'Completed'],
-                datasets: [{
-                    data: [statusCounts.pending, statusCounts.assigned, statusCounts.inProgress, statusCounts.completed],
-                    backgroundColor: ['#F5A623', '#4A90E2', '#9B59B6', '#7ED321'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { padding: 15, font: { size: 12 } }
-                    }
-                }
-            }
-        };
-
-        this.statusChart = new Chart(this.statusChartRef.nativeElement, config);
-    }
-
-    createTrendChart(): void {
-        if (!this.trendChartRef) return;
-
-        // Generate last 30 days data
-        const days = 30;
-        const labels: string[] = [];
-        const data: number[] = [];
-
-        for (let i = days - 1; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-
-            // Count requests created on this day
-            const count = this.allRequests.filter(r => {
-                const reqDate = new Date(r.created_at);
-                return reqDate.toDateString() === date.toDateString();
-            }).length;
-            data.push(count);
-        }
-
-        const config: ChartConfiguration = {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'New Complaints',
-                    data: data,
-                    borderColor: '#4A90E2',
-                    backgroundColor: 'rgba(74, 144, 226, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 }
-                    },
-                    x: {
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    }
-                }
-            }
-        };
-
-        this.trendChart = new Chart(this.trendChartRef.nativeElement, config);
-    }
-
-    updateCharts(): void {
-        if (this.categoryChart) {
-            this.categoryChart.destroy();
-            this.createCategoryChart();
-        }
-        if (this.statusChart) {
-            this.statusChart.destroy();
-            this.createStatusChart();
-        }
-        if (this.trendChart) {
-            this.trendChart.destroy();
-            this.createTrendChart();
-        }
     }
 
     assignComplaint(): void {

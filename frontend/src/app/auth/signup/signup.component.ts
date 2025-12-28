@@ -87,10 +87,14 @@ export class SignupComponent {
         formData.append('password', this.formData.password);
         formData.append('role', this.formData.role);
 
+        // Add phone number for ALL users (residents and technicians)
+        if (this.formData.phoneNumber) {
+            formData.append('phone', this.formData.phoneNumber);
+        }
+
         // Add technician-specific fields
         if (this.formData.role === 'Technician') {
             formData.append('employee_id', this.formData.employeeId);
-            formData.append('phone', this.formData.phoneNumber);
             formData.append('specialization', this.formData.specialization);
             if (this.selectedPhoto) {
                 formData.append('photo', this.selectedPhoto);

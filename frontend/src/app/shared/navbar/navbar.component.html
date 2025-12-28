@@ -1,22 +1,35 @@
+<!-- ============================
+     SOLID HEADER MASK (Hides scrolled content)
+     ============================ -->
+<div class="navbar-mask"></div>
+
+<!-- ============================
+     FLOATING LOGO (Outside Navbar)
+     ============================ -->
+<div class="floating-logo">
+    <a routerLink="/">
+        <img src="assets/logo.png" alt="Maintenance Tracker" class="logo-img">
+    </a>
+</div>
+
+<!-- ============================
+     FLOATING PILL NAVBAR
+     ============================ -->
 <nav class="navbar">
     <div class="navbar-container">
-        <div class="navbar-left">
-            <div class="navbar-brand">
-                <strong>Maintenance<span class="brand-accent">#</span></strong>
-            </div>
-
-            <nav class="nav-menu" *ngIf="currentUser">
-                <a *ngFor="let item of filteredMenuItems" [routerLink]="item.route" routerLinkActive="active"
-                    class="nav-link">
-                    {{ item.label }}
-                </a>
-            </nav>
+        <!-- Navigation Links -->
+        <div class="navbar-links" *ngIf="currentUser">
+            <a *ngFor="let item of filteredMenuItems" [routerLink]="item.route" routerLinkActive="active"
+                class="nav-link">
+                {{ item.label }}
+            </a>
         </div>
 
+        <!-- User Info & Actions -->
         <div class="navbar-right" *ngIf="currentUser">
             <div class="user-info">
                 <span class="user-name">{{ currentUser.name }}</span>
-                <span class="user-role">({{ currentUser.role }})</span>
+                <span class="user-role">{{ currentUser.role }}</span>
             </div>
             <button class="btn-logout" (click)="logout()">Logout</button>
         </div>

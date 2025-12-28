@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { User } from './user.model';
 
 export enum RequestStatus {
@@ -9,13 +9,23 @@ export enum RequestStatus {
 }
 
 export enum RequestCategory {
-    PLUMBING = 'Plumbing',
-    ELECTRICAL = 'Electrical',
-    PAINTING = 'Painting',
-    OTHER = 'Other',
+    PLUMBING = 'plumbing',
+    ELECTRICAL = 'electrical',
+    HVAC = 'hvac',
+    APPLIANCE = 'appliance',
+    SECURITY = 'security',
+    CLEANING = 'cleaning',
+    PAINTING = 'painting',
+    STRUCTURAL = 'structural',
+    OTHER = 'other',
 }
 
 @Entity('requests')
+@Index('idx_request_status', ['status'])
+@Index('idx_request_resident', ['resident_id'])
+@Index('idx_request_technician', ['technician_id'])
+@Index('idx_request_deleted', ['is_deleted'])
+@Index('idx_request_priority', ['priority'])
 export class Request {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -79,4 +89,11 @@ export class Request {
 
     @Column({ nullable: true })
     deleted_by_role!: string;
+
+    @Column({ type: 'datetime', nullable: true })
+    assigned_at?: Date | null; // When technician was assigned (for delay tracking)
+
+    @UpdateDateColumn()
+    updated_at!: Date;
 }
+

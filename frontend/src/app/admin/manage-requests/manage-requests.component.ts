@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { RequestModalComponent } from '../../shared/request-modal/request-modal.component';
 import { RequestService } from '../../services/request.service';
@@ -11,7 +13,15 @@ import { MaintenanceRequest, User } from '../../models/models';
 @Component({
   selector: 'app-manage-requests',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, NavbarComponent, RequestModalComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    NavbarComponent,
+    RequestModalComponent
+  ],
   templateUrl: './manage-requests.component.html',
   styleUrl: './manage-requests.component.css'
 })
@@ -23,6 +33,7 @@ export class ManageRequestsComponent implements OnInit {
   selectedRequest: MaintenanceRequest | null = null;
   showAssignModal = false;
   selectedDetailRequest: MaintenanceRequest | null = null;
+  isLoading = false; // Added loading state
 
   // Filters
   searchQuery = '';
@@ -32,7 +43,8 @@ export class ManageRequestsComponent implements OnInit {
 
   constructor(
     private requestService: RequestService,
-    private userService: UserService
+    private userService: UserService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -40,12 +52,18 @@ export class ManageRequestsComponent implements OnInit {
   }
 
   loadData(): void {
+    this.isLoading = true;
     this.requestService.getRequests().subscribe({
       next: (requests: any[]) => {
         this.allRequests = requests as MaintenanceRequest[];
         this.applyFilters();
+        this.isLoading = false;
       },
-      error: (err) => console.error('Error loading requests:', err)
+      error: (err) => {
+        console.error('Error loading requests:', err);
+        this.isLoading = false;
+        this.showNotification('Failed to load requests', 'error');
+      }
     });
 
     this.userService.getTechnicians().subscribe({
@@ -87,16 +105,37 @@ export class ManageRequestsComponent implements OnInit {
     this.selectedRequest = null;
   }
 
+  /**
+   * Get technicians filtered by the selected request's category.
+   * Shows technicians with matching specialization + general/other technicians.
+   */
+  get filteredTechnicians(): User[] {
+    if (!this.selectedRequest || !this.selectedRequest.category) {
+      return this.technicians;
+    }
+
+    const category = this.selectedRequest.category.toLowerCase();
+
+    return this.technicians.filter(tech => {
+      const spec = (tech.specialization || '').toLowerCase();
+      // Include if specialization matches category OR if general/other
+      return spec === category ||
+        spec === 'general' ||
+        spec === 'other' ||
+        spec === '';
+    });
+  }
+
   assignTechnician(techId: number): void {
     if (!this.selectedRequest) return;
 
     this.requestService.assignTechnician(this.selectedRequest.id, techId).subscribe({
       next: () => {
-        alert('Technician assigned successfully!');
+        this.showNotification('Technician assigned successfully!', 'success');
         this.closeAssignModal();
         this.loadData();
       },
-      error: (err) => alert(err.error?.message || 'Failed to assign technician')
+      error: (err) => this.showNotification(err.error?.message || 'Failed to assign technician', 'error')
     });
   }
 
@@ -105,12 +144,21 @@ export class ManageRequestsComponent implements OnInit {
     if (confirm('Are you sure you want to delete this maintenance request?')) {
       this.requestService.deleteRequest(id).subscribe({
         next: () => {
-          alert('Request deleted successfully');
+          this.showNotification('Request deleted successfully', 'success');
           this.loadData();
         },
-        error: (err) => alert('Failed to delete request')
+        error: (err) => this.showNotification('Failed to delete request', 'error')
       });
     }
+  }
+
+  private showNotification(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: type === 'error' ? ['error-snackbar'] : ['success-snackbar']
+    });
   }
 
   getStatusClass(status: string): string {

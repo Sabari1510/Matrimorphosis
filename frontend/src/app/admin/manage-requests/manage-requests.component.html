@@ -77,12 +77,29 @@
                             <td>{{ formatDate(request.created_at) }}</td>
                             <td>
                                 <div class="action-btns">
-                                    <button class="btn-icon" (click)="viewRequestDetails(request)"
-                                        title="View">👁️</button>
-                                    <button class="btn-icon" (click)="openAssignModal(request)"
-                                        *ngIf="request.status !== 'Resolved'" title="Assign">👤</button>
+                                    <button class="btn-icon view" (click)="viewRequestDetails(request)" title="View">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </button>
+                                    <button class="btn-icon assign" (click)="openAssignModal(request)"
+                                        *ngIf="request.status !== 'Resolved'" title="Assign">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                            <circle cx="8.5" cy="7" r="4" />
+                                            <path d="M20 8v6M23 11h-6" />
+                                        </svg>
+                                    </button>
                                     <button class="btn-icon delete" (click)="deleteRequest($event, request.id)"
-                                        title="Delete">🗑️</button>
+                                        title="Delete">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M18 6L6 18M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -111,9 +128,12 @@
 
             <div class="technician-list">
                 <h4>Select Technician</h4>
-                <p class="helper-text">Only verified technicians are listed here.</p>
+                <p class="helper-text">
+                    Showing technicians with <strong>{{ selectedRequest?.category | titlecase }}</strong> specialization
+                    or General expertise.
+                </p>
 
-                <div class="tech-row" *ngFor="let tech of technicians">
+                <div class="tech-row" *ngFor="let tech of filteredTechnicians">
                     <div class="tech-info">
                         <span class="tech-name">{{ tech.name }}</span>
                         <span class="tech-id">ID: {{ tech.employee_id || 'N/A' }} | {{ tech.specialization || 'General'
@@ -122,8 +142,8 @@
                     <button class="btn btn-primary btn-sm" (click)="assignTechnician(tech.id)">Assign</button>
                 </div>
 
-                <div *ngIf="technicians.length === 0" class="empty-list">
-                    No verified technicians found.
+                <div *ngIf="filteredTechnicians.length === 0" class="empty-list">
+                    No technicians found with matching specialization.
                 </div>
             </div>
         </div>

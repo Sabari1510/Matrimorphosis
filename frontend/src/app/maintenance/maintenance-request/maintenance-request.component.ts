@@ -49,6 +49,9 @@ export class MaintenanceRequestComponent {
     errorMessage = '';
     selectedFile: File | null = null;
 
+    /** Allowed image file types */
+    allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
     constructor(
         private requestService: RequestService, // Changed
         private authService: AuthService,
@@ -58,14 +61,18 @@ export class MaintenanceRequestComponent {
     onFileSelected(event: any): void {
         const file = event.target.files[0];
         if (file) {
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                this.errorMessage = 'Please select an image file';
+            // Validate file type - only allow specific image formats
+            if (!this.allowedTypes.includes(file.type)) {
+                this.errorMessage = 'Only image files are allowed (JPG, PNG, GIF, WebP)';
+                this.selectedFile = null;
+                event.target.value = ''; // Clear the file input
                 return;
             }
             // Validate file size (5MB max)
             if (file.size > 5 * 1024 * 1024) {
                 this.errorMessage = 'File size must be less than 5MB';
+                this.selectedFile = null;
+                event.target.value = ''; // Clear the file input
                 return;
             }
             this.selectedFile = file;
